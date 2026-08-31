@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Fraunces, IBM_Plex_Mono } from "next/font/google";
@@ -73,7 +73,7 @@ const jsonLd = {
   sameAs: [GITHUB_URL, LINKEDIN_URL],
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
   const stored = (await cookies()).get(LOCALE_KEY)?.value;
   const lang = isLocale(stored) ? stored : DEFAULT_LOCALE;
 
