@@ -1,0 +1,47 @@
+import { describe, expect, it } from "vitest";
+import { careerBreak, copy, education, experience, languages, skills } from "@/data/copy";
+import { LOCALES } from "@/lib/locale";
+import { VITAL_NAMES } from "@/lib/vitals";
+
+describe("locale copy", () => {
+  it("keeps every locale’s keys in lockstep", () => {
+    const keys = Object.keys(copy.en);
+    for (const locale of LOCALES) {
+      expect(Object.keys(copy[locale])).toEqual(keys);
+      expect(Object.keys(copy[locale].skillGroups)).toEqual(Object.keys(copy.en.skillGroups));
+      expect(Object.keys(copy[locale].vitalDefs)).toEqual([...VITAL_NAMES]);
+      expect(experience[locale]).toHaveLength(experience.en.length);
+      expect(education[locale]).toHaveLength(education.en.length);
+      expect(experience[locale][0]?.points.length).toBe(experience.en[0]?.points.length);
+    }
+  });
+
+  it("leads with the career break, not a current Dynatrace role", () => {
+    expect(copy.en.breakTitle).toMatch(/career break/i);
+    expect(careerBreak.en.when).toMatch(/Dec 2025/i);
+    expect(careerBreak.en.body).toMatch(/personal matters/i);
+    expect(experience.en[0]?.org).toBe("Dynatrace");
+    expect(experience.en[0]?.when).toMatch(/Nov 2025/);
+    expect(`${careerBreak.en.body} ${experience.en[0]?.body}`).not.toMatch(/currently at Dynatrace/i);
+  });
+
+  it("makes recruiter and custom-work paths obvious", () => {
+    expect(copy.en.kicker).toMatch(/open to work/i);
+    expect(copy.en.headline).toMatch(/frontend software engineer/i);
+    expect(copy.en.hirePath).toMatch(/recruiter/i);
+    expect(copy.en.buildPath).toMatch(/custom/i);
+    expect(copy.en.hireCta).toMatch(/hire/i);
+    expect(copy.en.buildCta).toMatch(/commission/i);
+    expect(copy.en.contactLede).toMatch(/recruiter/i);
+    expect(copy.en.contactLede).toMatch(/custom app/i);
+  });
+
+  it("covers the CV skill groups", () => {
+    expect(skills.frontend).toContain("React");
+    expect(skills.frontend).toContain("State management");
+    expect(skills.testing).toContain("Playwright");
+    expect(skills.engineering).toContain("Agile");
+    expect(skills.backend).toContain("Spring");
+    expect(languages.en).toMatch(/German beginner/i);
+  });
+});
