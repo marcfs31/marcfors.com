@@ -49,6 +49,9 @@ type UiCopy = {
   idea: string;
   skipToContent: string;
   navLabel: string;
+  expand: string;
+  collapse: string;
+  hits: readonly string[];
   vitalGood: string;
   vitalDefs: {
     LCP: string;
@@ -146,6 +149,19 @@ export const copy: Record<Locale, UiCopy> = {
     idea: "Idea",
     skipToContent: "Skip to content",
     navLabel: "Primary",
+    expand: "Open",
+    collapse: "Close",
+    hits: [
+      "Seven-plus years",
+      "observability, fintech, banking and government",
+      "React and TypeScript",
+      "technical design through production",
+      "frontend software engineer role",
+      "Frontend software engineer roles",
+      "Barcelona or remote EU",
+      "React, TypeScript, Angular",
+      "Recruiters with a frontend role",
+    ],
     vitalGood: "Good",
     vitalDefs: {
       LCP: "Time until the largest heading or image in view is painted.",
@@ -241,6 +257,19 @@ export const copy: Record<Locale, UiCopy> = {
     idea: "Idea",
     skipToContent: "Saltar al contenido",
     navLabel: "Principal",
+    expand: "Abrir",
+    collapse: "Cerrar",
+    hits: [
+      "Más de siete años",
+      "observabilidad, fintech, banca y administración",
+      "React y TypeScript",
+      "diseño técnico a producción",
+      "ingeniero frontend",
+      "Roles de ingeniero frontend",
+      "Barcelona o remoto UE",
+      "React, TypeScript, Angular",
+      "Reclutadores con un rol frontend",
+    ],
     vitalGood: "Bien",
     vitalDefs: {
       LCP: "Tiempo hasta que se pinta el titular o la imagen más grande del viewport.",
@@ -336,6 +365,19 @@ export const copy: Record<Locale, UiCopy> = {
     idea: "Idea",
     skipToContent: "Salta al contingut",
     navLabel: "Principal",
+    expand: "Obre",
+    collapse: "Tanca",
+    hits: [
+      "Més de set anys",
+      "observabilitat, fintech, banca i administració",
+      "React i TypeScript",
+      "disseny tècnic a producció",
+      "enginyer frontend",
+      "Rols d'enginyer frontend",
+      "Barcelona o remot UE",
+      "React, TypeScript, Angular",
+      "Reclutadors amb un rol frontend",
+    ],
     vitalGood: "Bé",
     vitalDefs: {
       LCP: "Temps fins que es pinta el titular o la imatge més gran del viewport.",
@@ -431,6 +473,19 @@ export const copy: Record<Locale, UiCopy> = {
     idea: "Idea",
     skipToContent: "Salta al contenuto",
     navLabel: "Principale",
+    expand: "Apri",
+    collapse: "Chiudi",
+    hits: [
+      "Oltre sette anni",
+      "observability, fintech, banking e pubblica amministrazione",
+      "React e TypeScript",
+      "design tecnico alla produzione",
+      "ingegnere frontend",
+      "Ruoli da ingegnere frontend",
+      "Barcellona o remoto UE",
+      "React, TypeScript, Angular",
+      "Recruiter con un ruolo frontend",
+    ],
     vitalGood: "Buono",
     vitalDefs: {
       LCP: "Tempo finché non viene dipinto il titolo o l'immagine più grande nel viewport.",
@@ -526,6 +581,19 @@ export const copy: Record<Locale, UiCopy> = {
     idea: "Ideia",
     skipToContent: "Saltar para o conteúdo",
     navLabel: "Principal",
+    expand: "Abrir",
+    collapse: "Fechar",
+    hits: [
+      "Mais de sete anos",
+      "observabilidade, fintech, banca e administração",
+      "React e TypeScript",
+      "desenho técnico à produção",
+      "engenheiro frontend",
+      "Papéis de engenheiro frontend",
+      "Barcelona ou remoto UE",
+      "React, TypeScript, Angular",
+      "Recrutadores com um papel frontend",
+    ],
     vitalGood: "Bom",
     vitalDefs: {
       LCP: "Tempo até o maior título ou imagem no viewport ser pintado.",
@@ -621,6 +689,19 @@ export const copy: Record<Locale, UiCopy> = {
     idea: "Idee",
     skipToContent: "Zum Inhalt springen",
     navLabel: "Primär",
+    expand: "Öffnen",
+    collapse: "Schließen",
+    hits: [
+      "Mehr als sieben Jahre",
+      "Observability, Fintech, Banking und Verwaltung",
+      "React und TypeScript",
+      "technischen Entwurf bis in Produktion",
+      "Frontend-Softwareingenieur",
+      "Rollen als Frontend-Softwareingenieur",
+      "Barcelona oder remote EU",
+      "React, TypeScript, Angular",
+      "Recruiter mit einer Frontend-Rolle",
+    ],
     vitalGood: "Gut",
     vitalDefs: {
       LCP: "Zeit, bis die größte Überschrift oder das größte Bild im Viewport gemalt ist.",

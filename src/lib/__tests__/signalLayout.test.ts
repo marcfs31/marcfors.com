@@ -61,6 +61,10 @@ describe("displayed signals keep a stable layout", () => {
     expect(desk).toContain("<h1>{SITE_NAME}</h1>");
     expect(desk).toContain('className="role"');
     expect(desk).toContain("SITE_REPO");
+    expect(desk).toContain("useFoldScroll");
+    expect(desk).toContain("openId === \"intro\"");
+    expect(source("components/Fold.tsx")).toContain("aria-expanded");
+    expect(source("app/globals.css")).toContain("grid-template-rows: 0fr");
   });
 
   it("keeps every displayed vital’s good ceiling at the Core Web Vitals bar", () => {

@@ -23,7 +23,15 @@ type Health = {
   audit: AuditSnapshot;
 };
 
-export function SignalBoard({ audit, locale }: { audit: AuditSnapshot; locale: Locale }) {
+export function SignalBoard({
+  audit,
+  locale,
+  showHeading = true,
+}: {
+  audit: AuditSnapshot;
+  locale: Locale;
+  showHeading?: boolean;
+}) {
   const t = copy[locale];
   const [health, setHealth] = useState<Health | null>(null);
   const [vitals, setVitals] = useState<Partial<Record<VitalName, VitalPayload>>>({});
@@ -75,8 +83,8 @@ export function SignalBoard({ audit, locale }: { audit: AuditSnapshot; locale: L
   const commit = health?.commit?.slice(0, 7) ?? "local";
 
   return (
-    <section id="signal">
-      <h2>{t.signalTitle}</h2>
+    <div className="signal-board">
+      {showHeading ? <h2>{t.signalTitle}</h2> : null}
       <p className="lede">{t.signalLede}</p>
       <div className="signal-grid">
         <article className="card">
@@ -137,7 +145,7 @@ export function SignalBoard({ audit, locale }: { audit: AuditSnapshot; locale: L
         {" · "}
         <a href="/api/health">/api/health</a>
       </p>
-    </section>
+    </div>
   );
 }
 

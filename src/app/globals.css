@@ -164,11 +164,88 @@ a:hover { text-decoration: underline; }
   color: var(--brass);
 }
 
+.folds {
+  display: grid;
+  gap: 0;
+}
+
+.fold {
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.fold-heading {
+  margin: 0;
+}
+
+.fold-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 56px;
+  padding: 10px 0;
+  background: none;
+  border: 0;
+  color: var(--paper-dim);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.fold-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fold-state {
+  flex: 0 0 auto;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.fold.open .fold-head {
+  color: var(--brass);
+}
+
+.fold-head.accent .fold-title {
+  color: var(--signal);
+}
+
+.fold.open .fold-head.accent {
+  color: var(--signal);
+}
+
+.fold-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms ease;
+}
+
+.fold.open .fold-panel {
+  grid-template-rows: 1fr;
+}
+
+.fold-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.fold.open .fold-panel-inner {
+  overflow: visible;
+  padding-bottom: 40px;
+}
+
 .hero {
   display: grid;
   gap: 18px;
-  margin-bottom: 72px;
-  min-height: 420px;
+  margin: 8px 0 12px;
   contain: layout;
 }
 
@@ -195,7 +272,7 @@ h1 {
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin: 0;
-  color: var(--paper);
+  color: var(--brass);
   max-width: 22ch;
   min-height: 1.15em;
 }
@@ -220,10 +297,16 @@ h1 {
 }
 
 .lede {
-  max-width: 62ch;
+  max-width: 58ch;
   color: var(--paper);
-  font-size: 18px;
-  line-height: 1.55;
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+.hit {
+  color: var(--signal);
+  font-weight: 500;
+  font-style: normal;
 }
 .proof-line {
   margin: 0;
@@ -315,6 +398,12 @@ h2 {
 }
 .subhead {
   margin-top: 36px;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass);
 }
 
 .trace {
@@ -341,8 +430,8 @@ h2 {
 .job p {
   margin: 0 0 10px;
   color: var(--paper);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 17px;
+  line-height: 1.55;
 }
 .job-now .org { color: var(--signal); }
 .job-points {
@@ -394,6 +483,10 @@ h2 {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--paper-dim);
+}
+.chip.hit {
+  color: var(--signal);
+  border-color: var(--signal);
 }
 
 .grid-cards {
@@ -605,7 +698,6 @@ footer {
   .langs { margin-left: 0; padding-left: 0; border-left: 0; }
   .wrap { padding: 22px 16px 72px; }
   h1 { font-size: 40px; }
-  .hero { min-height: 360px; }
   .cta { width: 100%; }
   .tip { width: min(240px, 86vw); }
 }
@@ -613,4 +705,5 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .spot { display: none; }
   .tip { transform: none; }
+  .fold-panel { transition: none; }
 }

@@ -2,6 +2,11 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.2.1 — 2026-09-02
+
+- Sections fold: intro open by default, others collapsed; scrolling opens the current fold and closes the previous
+- Recruiter highlights on years, stack, location, hire path, and key skills
+
 ## 0.2.0 — 2026-08-31
 
 - Public source at `github.com/marcfs31/marcfors.com`, linked from the desk, selected work, and footer

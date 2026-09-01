@@ -2,15 +2,19 @@
 
 import { useMemo, useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
+import { Emphasize } from "@/components/Emphasize";
+import { Fold } from "@/components/Fold";
 import { careerBreak, contact, copy, education, experience, languages, skills } from "@/data/copy";
 import type { Locale } from "@/lib/locale";
 import { LOCALE_CODES, LOCALE_LABELS, LOCALES } from "@/lib/locale";
 import { featured, lab, type Project } from "@/data/projects";
 import type { AuditSnapshot } from "@/lib/audit";
+import { RECRUITER_SKILLS, RECRUITER_TOKENS } from "@/lib/emphasize";
 import type { GhRepo } from "@/lib/github";
 import { mailTo } from "@/lib/mail";
 import { writeLocale } from "@/lib/prefs";
 import { SITE_NAME, SITE_REPO } from "@/lib/site";
+import { useFoldScroll } from "@/lib/useFoldScroll";
 import { SignalBoard } from "@/components/SignalBoard";
 
 function projectLinks(project: Project, locale: Locale) {
@@ -36,6 +40,23 @@ function projectLinks(project: Project, locale: Locale) {
   );
 }
 
+function ProofLine({ text }: { text: string }) {
+  return (
+    <p className="proof-line">
+      {text.split(" · ").map((token, index) => (
+        <span key={token}>
+          {index > 0 ? " · " : null}
+          {RECRUITER_SKILLS.has(token) || token === "Barcelona" || token === "Dynatrace Dashboards" ? (
+            <strong className="hit">{token}</strong>
+          ) : (
+            token
+          )}
+        </span>
+      ))}
+    </p>
+  );
+}
+
 export function Desk({
   repos,
   audit,
@@ -47,6 +68,8 @@ export function Desk({
 }) {
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const t = copy[locale];
+  const hits = t.hits;
+  const tokens = [...hits, ...RECRUITER_TOKENS];
   const spotlight = featured.filter((item) => item.spotlight);
   const restWork = featured.filter((item) => !item.spotlight);
 
@@ -66,6 +89,15 @@ export function Desk({
     });
   }, [repos]);
 
+  const foldIds = useMemo(() => {
+    const ids = ["intro", "work", "projects", "contact", "skills", "signal", "lab"];
+    if (extraRepos.length > 0) ids.push("more");
+    ids.push("edu");
+    return ids;
+  }, [extraRepos.length]);
+
+  const { openId, open } = useFoldScroll(foldIds);
+
   return (
     <div
       className="desk"
@@ -82,14 +114,20 @@ export function Desk({
       </a>
       <div className="wrap">
         <header className="top">
-          <a className="brand" href="#main">
+          <a className="brand" href="#intro">
             <BrandMark />
             {SITE_NAME}
           </a>
           <nav className="nav" aria-label={t.navLabel}>
-            <a href="#work">{t.workTitle}</a>
-            <a href="#projects">{t.projectsTitle}</a>
-            <a href="#contact">{t.contactTitle}</a>
+            <a href="#work" onClick={() => open("work")}>
+              {t.workTitle}
+            </a>
+            <a href="#projects" onClick={() => open("projects")}>
+              {t.projectsTitle}
+            </a>
+            <a href="#contact" onClick={() => open("contact")}>
+              {t.contactTitle}
+            </a>
             <a href={SITE_REPO} target="_blank" rel="noopener noreferrer">
               {t.source}
             </a>
@@ -113,40 +151,59 @@ export function Desk({
           </nav>
         </header>
 
-        <main id="main">
-          <section className="hero">
-            <div className="kicker">{t.kicker}</div>
-            <h1>{SITE_NAME}</h1>
-            <p className="role">{t.headline}</p>
-            <p className="tagline">{t.tagline}</p>
-            <div className="meta-row">
-              <span>{t.place}</span>
-              <span>{t.now}</span>
-            </div>
-            <p className="lede">{t.lede}</p>
-            <p className="proof-line">{t.proofLine}</p>
-            <div className="cta-row">
-              <a className="cta" href={mailTo(t.hireSubject)}>
-                {t.hireCta}
+        <main id="main" className="folds">
+          <Fold
+            id="intro"
+            title={t.kicker}
+            open={openId === "intro"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            accent
+            onOpen={open}
+          >
+            <div className="hero">
+              <h1>{SITE_NAME}</h1>
+              <p className="role">{t.headline}</p>
+              <p className="tagline">{t.tagline}</p>
+              <div className="meta-row">
+                <span className="hit">{t.place}</span>
+                <span className="hit">{t.now}</span>
+              </div>
+              <p className="lede">
+                <Emphasize text={t.lede} phrases={hits} />
+              </p>
+              <ProofLine text={t.proofLine} />
+              <div className="cta-row">
+                <a className="cta" href={mailTo(t.hireSubject)}>
+                  {t.hireCta}
+                </a>
+                <a className="cta ghost" href={mailTo(t.buildSubject)}>
+                  {t.buildCta}
+                </a>
+              </div>
+              <a className="hero-email" href={`mailto:${contact.email}`}>
+                {contact.email}
               </a>
-              <a className="cta ghost" href={mailTo(t.buildSubject)}>
-                {t.buildCta}
-              </a>
             </div>
-            <a className="hero-email" href={`mailto:${contact.email}`}>
-              {contact.email}
-            </a>
-          </section>
+          </Fold>
 
-          <section id="work">
-            <h2>{t.workTitle}</h2>
+          <Fold
+            id="work"
+            title={t.workTitle}
+            open={openId === "work"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
             <div className="trace">
               <article className="job job-now">
                 <div>
                   <div className="org">{t.breakTitle}</div>
                   <div className="when">{careerBreak[locale].when}</div>
                 </div>
-                <p>{careerBreak[locale].body}</p>
+                <p>
+                  <Emphasize text={careerBreak[locale].body} phrases={tokens} />
+                </p>
               </article>
               {experience[locale].map((job) => (
                 <article className="job" key={job.org + job.when}>
@@ -156,20 +213,30 @@ export function Desk({
                     <div className="when">{job.when}</div>
                   </div>
                   <div>
-                    <p>{job.body}</p>
+                    <p>
+                      <Emphasize text={job.body} phrases={tokens} />
+                    </p>
                     <ul className="job-points">
                       {job.points.map((point) => (
-                        <li key={point}>{point}</li>
+                        <li key={point}>
+                          <Emphasize text={point} phrases={tokens} />
+                        </li>
                       ))}
                     </ul>
                   </div>
                 </article>
               ))}
             </div>
-          </section>
+          </Fold>
 
-          <section id="projects">
-            <h2>{t.projectsTitle}</h2>
+          <Fold
+            id="projects"
+            title={t.projectsTitle}
+            open={openId === "projects"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
             <div className="grid-cards">
               {spotlight.map((project) => (
                 <article className="card" key={project.name}>
@@ -202,16 +269,26 @@ export function Desk({
                 ))}
               </div>
             ) : null}
-          </section>
+          </Fold>
 
-          <section id="contact">
-            <h2>{t.contactTitle}</h2>
-            <p className="lede">{t.contactLede}</p>
+          <Fold
+            id="contact"
+            title={t.contactTitle}
+            open={openId === "contact"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
+            <p className="lede">
+              <Emphasize text={t.contactLede} phrases={hits} />
+            </p>
             <div className="path-grid">
               <article className="card path-card">
                 <div className="kicker">{t.hirePath}</div>
                 <h3>{t.hireCta}</h3>
-                <p>{t.hirePathLede}</p>
+                <p>
+                  <Emphasize text={t.hirePathLede} phrases={hits} />
+                </p>
                 <a className="cta" href={mailTo(t.hireSubject)}>
                   {t.hireCta}
                 </a>
@@ -239,17 +316,23 @@ export function Desk({
                 </a>
               </div>
             </div>
-          </section>
+          </Fold>
 
-          <section>
-            <h2>{t.skillsTitle}</h2>
+          <Fold
+            id="skills"
+            title={t.skillsTitle}
+            open={openId === "skills"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
             <div className="skill-groups">
               {(Object.keys(skills) as Array<keyof typeof skills>).map((group) => (
                 <div key={group}>
                   <div className="skill-label">{t.skillGroups[group]}</div>
                   <div className="chips">
                     {skills[group].map((item) => (
-                      <span className="chip" key={item}>
+                      <span className={RECRUITER_SKILLS.has(item) ? "chip hit" : "chip"} key={item}>
                         {item}
                       </span>
                     ))}
@@ -257,12 +340,27 @@ export function Desk({
                 </div>
               ))}
             </div>
-          </section>
+          </Fold>
 
-          <SignalBoard audit={audit} locale={locale} />
+          <Fold
+            id="signal"
+            title={t.signalTitle}
+            open={openId === "signal"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
+            <SignalBoard audit={audit} locale={locale} showHeading={false} />
+          </Fold>
 
-          <section id="lab">
-            <h2>{t.labTitle}</h2>
+          <Fold
+            id="lab"
+            title={t.labTitle}
+            open={openId === "lab"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
             <p className="lede">{t.labLede}</p>
             <ul className="lab-list">
               {lab.map((idea) => (
@@ -272,11 +370,17 @@ export function Desk({
                 </li>
               ))}
             </ul>
-          </section>
+          </Fold>
 
           {extraRepos.length > 0 ? (
-            <section>
-              <h2>{t.moreTitle}</h2>
+            <Fold
+              id="more"
+              title={t.moreTitle}
+              open={openId === "more"}
+              expandLabel={t.expand}
+              collapseLabel={t.collapse}
+              onOpen={open}
+            >
               {extraRepos.slice(0, 8).map((repo) => (
                 <div className="repo-row" key={repo.html_url}>
                   <div>
@@ -288,19 +392,25 @@ export function Desk({
                   <span className="muted">{repo.language}</span>
                 </div>
               ))}
-            </section>
+            </Fold>
           ) : null}
 
-          <section>
-            <h2>{t.eduTitle}</h2>
+          <Fold
+            id="edu"
+            title={t.eduTitle}
+            open={openId === "edu"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
             {education[locale].map((item) => (
               <p className="edu-line" key={item}>
                 {item}
               </p>
             ))}
-            <h2 className="subhead">{t.langsTitle}</h2>
+            <h3 className="subhead">{t.langsTitle}</h3>
             <p>{languages[locale]}</p>
-          </section>
+          </Fold>
         </main>
 
         <footer>
