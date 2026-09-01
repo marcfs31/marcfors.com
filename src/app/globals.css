@@ -222,23 +222,15 @@ a:hover { text-decoration: underline; }
   color: var(--signal);
 }
 
-.fold-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 280ms ease;
+.fold:not(.open) .fold-panel {
+  display: none;
 }
 
 .fold.open .fold-panel {
-  grid-template-rows: 1fr;
+  display: block;
 }
 
 .fold-panel-inner {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.fold.open .fold-panel-inner {
-  overflow: visible;
   padding-bottom: 40px;
 }
 
@@ -705,5 +697,5 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .spot { display: none; }
   .tip { transform: none; }
-  .fold-panel { transition: none; }
+
 }

@@ -2,6 +2,10 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.2.2 — 2026-09-02
+
+- Folds actually show their content (the 0fr grid row was collapsing open panels to zero height)
+
 ## 0.2.1 — 2026-09-02
 
 - Sections fold: intro open by default, others collapsed; scrolling opens the current fold and closes the previous

@@ -64,7 +64,8 @@ describe("displayed signals keep a stable layout", () => {
     expect(desk).toContain("useFoldScroll");
     expect(desk).toContain("openId === \"intro\"");
     expect(source("components/Fold.tsx")).toContain("aria-expanded");
-    expect(source("app/globals.css")).toContain("grid-template-rows: 0fr");
+    expect(source("app/globals.css")).toContain(".fold:not(.open) .fold-panel");
+    expect(source("app/globals.css")).toContain("display: none");
   });
 
   it("keeps every displayed vital’s good ceiling at the Core Web Vitals bar", () => {

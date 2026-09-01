@@ -34,7 +34,13 @@ export function Fold({
           <span className="fold-state">{open ? collapseLabel : expandLabel}</span>
         </button>
       </h2>
-      <div className="fold-panel" id={panelId} role="region" aria-labelledby={`${id}-label`}>
+      <div
+        className="fold-panel"
+        id={panelId}
+        role="region"
+        aria-labelledby={`${id}-label`}
+        hidden={!open}
+      >
         <div className="fold-panel-inner">{children}</div>
       </div>
     </section>
