@@ -8,13 +8,13 @@ import { Emphasize } from "@/components/Emphasize";
 import { Fold } from "@/components/Fold";
 import { careerBreak, contact, copy, education, experience, languages, skills } from "@/data/copy";
 import type { Locale } from "@/lib/locale";
-import { LOCALE_CODES, LOCALE_LABELS, LOCALES, stripLocale, withLocale } from "@/lib/locale";
+import { withLocale } from "@/lib/locale";
 import { featured, lab, type Project } from "@/data/projects";
 import type { AuditSnapshot } from "@/lib/audit";
 import { RECRUITER_SKILLS, RECRUITER_TOKENS } from "@/lib/emphasize";
 import type { GhRepo } from "@/lib/github";
 import { mailTo } from "@/lib/mail";
-import { writeLocale } from "@/lib/prefs";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SITE_NAME, SITE_REPO } from "@/lib/site";
 import { useFoldScroll } from "@/lib/useFoldScroll";
@@ -132,21 +132,7 @@ export function Desk({
             <a className="nav-hire" href={mailTo(t.hireSubject)}>
               {t.hireCta}
             </a>
-            <div className="langs" role="group" aria-label={t.lang}>
-              {LOCALES.map((code) => (
-                <Link
-                  key={code}
-                  href={withLocale(code, stripLocale(pathname))}
-                  lang={code}
-                  hrefLang={code}
-                  aria-label={LOCALE_LABELS[code]}
-                  aria-current={locale === code ? "page" : undefined}
-                  onClick={() => writeLocale(code)}
-                >
-                  {LOCALE_CODES[code]}
-                </Link>
-              ))}
-            </div>
+            <LanguageSwitcher locale={locale} pathname={pathname} />
             <ThemeSwitcher locale={locale} />
           </nav>
         </header>
@@ -173,6 +159,7 @@ export function Desk({
               <p className="lede">
                 <Emphasize text={t.lede} phrases={hits} />
               </p>
+              <p className="proof-metric">{t.proofMetric}</p>
               <ProofLine text={t.proofLine} />
               <div className="cta-row">
                 <a className="cta" href={mailTo(t.hireSubject)}>
@@ -417,6 +404,8 @@ export function Desk({
 
         <footer>
           <span>{t.footer}</span>
+          {" · "}
+          <span>{t.keyboardHint}</span>
           {" · "}
           <Link href={withLocale(locale, "/print")}>{t.printCta}</Link>
           {" · "}

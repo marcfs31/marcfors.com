@@ -67,3 +67,24 @@ export function languageAlternates(pathname: string, origin: string): Record<str
   }
   return languages;
 }
+
+export function preferredLocale(acceptLanguage: string | null): Locale {
+  if (!acceptLanguage) return DEFAULT_LOCALE;
+  for (const part of acceptLanguage.split(",")) {
+    const tag = part.split(";")[0]?.trim().toLowerCase();
+    if (!tag) continue;
+    const base = tag.split("-")[0] ?? "";
+    if (isLocale(tag)) return tag;
+    if (isLocale(base)) return base;
+  }
+  return DEFAULT_LOCALE;
+}
+
+export function isCrawler(userAgent: string | null): boolean {
+  return Boolean(
+    userAgent &&
+      /bot|crawler|spider|google|bing|yandex|baidu|slurp|duckduck|facebookexternalhit|preview|linkedinbot/i.test(
+        userAgent,
+      ),
+  );
+}

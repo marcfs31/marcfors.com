@@ -41,6 +41,7 @@ export const featured: Project[] = [
     stack: ["Next.js 16", "Clerk", "Neon", "Drizzle"],
     live: "https://habit-breaker-blush.vercel.app",
     private: true,
+    caseStudy: "habit-breaker",
     spotlight: true,
   },
   {

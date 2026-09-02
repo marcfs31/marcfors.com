@@ -52,6 +52,8 @@ type UiCopy = {
   expand: string;
   collapse: string;
   seeking: string;
+  proofMetric: string;
+  keyboardHint: string;
   printCta: string;
   printTitle: string;
   printHint: string;
@@ -95,6 +97,7 @@ type UiCopy = {
     backend: string;
   };
   themeNames: {
+    system: string;
     light: string;
     dark: string;
     green: string;
@@ -160,7 +163,9 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Primary",
     expand: "Open",
     collapse: "Close",
-    seeking: "Frontend · React · Barcelona or remote EU · available now",
+    seeking: "Frontend · React · Barcelona or remote EU · open from Dec 2025",
+    proofMetric: "Raised automated test coverage ~20% in two weeks on a critical Dynatrace project.",
+    keyboardHint: "j / k moves sections",
     printCta: "Print CV",
     printTitle: "Curriculum",
     printHint: "Use the print dialog to save a PDF.",
@@ -214,6 +219,7 @@ export const copy: Record<Locale, UiCopy> = {
       backend: "Backend",
     },
     themeNames: {
+      system: "System",
       light: "Daylight paper",
       dark: "Observatory",
       green: "Signal green",
@@ -277,7 +283,9 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principal",
     expand: "Abrir",
     collapse: "Cerrar",
-    seeking: "Frontend · React · Barcelona o remoto UE · disponible ahora",
+    seeking: "Frontend · React · Barcelona o remoto UE · abierto desde dic 2025",
+    proofMetric: "Subí la cobertura de tests automáticos ~20% en dos semanas en un proyecto crítico de Dynatrace.",
+    keyboardHint: "j / k cambia de sección",
     printCta: "Imprimir CV",
     printTitle: "Currículum",
     printHint: "Usa el diálogo de impresión para guardar un PDF.",
@@ -331,6 +339,7 @@ export const copy: Record<Locale, UiCopy> = {
       backend: "Backend",
     },
     themeNames: {
+      system: "Sistema",
       light: "Papel de día",
       dark: "Observatorio",
       green: "Verde señal",
@@ -394,7 +403,9 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principal",
     expand: "Obre",
     collapse: "Tanca",
-    seeking: "Frontend · React · Barcelona o remot UE · disponible ara",
+    seeking: "Frontend · React · Barcelona o remot UE · obert des de des 2025",
+    proofMetric: "Vaig pujar la cobertura de tests automàtics ~20% en dues setmanes en un projecte crític de Dynatrace.",
+    keyboardHint: "j / k canvia de secció",
     printCta: "Imprimeix el CV",
     printTitle: "Currículum",
     printHint: "Fes servir el diàleg d'impressió per desar un PDF.",
@@ -448,6 +459,7 @@ export const copy: Record<Locale, UiCopy> = {
       backend: "Backend",
     },
     themeNames: {
+      system: "Sistema",
       light: "Paper de dia",
       dark: "Observatori",
       green: "Verd senyal",
@@ -511,7 +523,9 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principale",
     expand: "Apri",
     collapse: "Chiudi",
-    seeking: "Frontend · React · Barcellona o remoto UE · disponibile ora",
+    seeking: "Frontend · React · Barcellona o remoto UE · aperto da dic 2025",
+    proofMetric: "Ho alzato la coverage dei test automatici ~20% in due settimane su un progetto critico Dynatrace.",
+    keyboardHint: "j / k sposta le sezioni",
     printCta: "Stampa CV",
     printTitle: "Curriculum",
     printHint: "Usa la finestra di stampa per salvare un PDF.",
@@ -565,6 +579,7 @@ export const copy: Record<Locale, UiCopy> = {
       backend: "Backend",
     },
     themeNames: {
+      system: "Sistema",
       light: "Carta diurna",
       dark: "Osservatorio",
       green: "Verde segnale",
@@ -628,7 +643,9 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principal",
     expand: "Abrir",
     collapse: "Fechar",
-    seeking: "Frontend · React · Barcelona ou remoto UE · disponível agora",
+    seeking: "Frontend · React · Barcelona ou remoto UE · aberto desde dez 2025",
+    proofMetric: "Subi a cobertura de testes automáticos ~20% em duas semanas num projeto crítico da Dynatrace.",
+    keyboardHint: "j / k muda de secção",
     printCta: "Imprimir CV",
     printTitle: "Currículo",
     printHint: "Usa o diálogo de impressão para guardar um PDF.",
@@ -682,6 +699,7 @@ export const copy: Record<Locale, UiCopy> = {
       backend: "Backend",
     },
     themeNames: {
+      system: "Sistema",
       light: "Papel de dia",
       dark: "Observatório",
       green: "Verde sinal",
@@ -745,7 +763,9 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Primär",
     expand: "Öffnen",
     collapse: "Schließen",
-    seeking: "Frontend · React · Barcelona oder remote EU · sofort verfügbar",
+    seeking: "Frontend · React · Barcelona oder remote EU · offen ab Dez 2025",
+    proofMetric: "Automatisierte Testabdeckung ~20 % in zwei Wochen auf einem kritischen Dynatrace-Projekt erhöht.",
+    keyboardHint: "j / k wechselt den Abschnitt",
     printCta: "Lebenslauf drucken",
     printTitle: "Lebenslauf",
     printHint: "Im Druckdialog als PDF speichern.",
@@ -799,6 +819,7 @@ export const copy: Record<Locale, UiCopy> = {
       backend: "Backend",
     },
     themeNames: {
+      system: "System",
       light: "Tageslichtpapier",
       dark: "Sternwarte",
       green: "Signalgrün",

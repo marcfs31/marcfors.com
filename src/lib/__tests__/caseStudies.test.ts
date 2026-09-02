@@ -11,4 +11,10 @@ describe("case studies", () => {
       expect(Object.keys(study.result).sort()).toEqual([...LOCALES].sort());
     }
   });
+
+  it("ships Habit Breaker as a live product without a private repo URL", () => {
+    const habit = CASE_STUDIES.find((study) => study.slug === "habit-breaker");
+    expect(habit?.live).toMatch(/^https:\/\//);
+    expect(habit?.repo).toBeUndefined();
+  });
 });

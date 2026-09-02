@@ -73,6 +73,8 @@ const jsonLd = {
     addressCountry: "ES",
   },
   sameAs: [GITHUB_URL, LINKEDIN_URL],
+  knowsAbout: ["React", "TypeScript", "Angular", "Next.js", "observability", "Playwright"],
+  seeks: "Frontend software engineer roles in Barcelona or remote EU, open from December 2025",
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

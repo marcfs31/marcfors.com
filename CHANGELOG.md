@@ -2,6 +2,16 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.5.0 — 2026-09-02
+
+- System theme swatch follows the OS live; daylight/observatory stay explicit picks
+- First visit redirects from `Accept-Language` (crawlers stay on English); language switcher writes the cookie so you can get back
+- Compact mobile header: language select plus System/Dark/Light, extra palettes stay on wider screens
+- Habit Breaker case study (live app only, no private repo)
+- Hire line dates availability from Dec 2025; hero proof metric (~20% coverage)
+- Per-locale Open Graph and Twitter images; JSON-LD `knowsAbout` / `seeks`
+- Keyboard hint in the footer; Next.js 16 `proxy.ts` replaces `middleware.ts`
+
 ## 0.4.2 — 2026-09-02
 
 - Revert the autocapitalize override from 0.4.1

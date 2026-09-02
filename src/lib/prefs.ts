@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { DEFAULT_LOCALE, isLocale, localeCookie, LOCALE_KEY, type Locale } from "./locale";
-import { DEFAULT_THEME, isTheme, THEME_KEY, type Theme } from "./theme";
+import { DEFAULT_THEME, isTheme, resolveTheme, THEME_KEY, type Theme } from "./theme";
 
 const PREFS_EVENT = "marcfors-prefs";
 
@@ -28,15 +28,27 @@ export function readLocale(): Locale {
   }
 }
 
+export function prefersLight(): boolean {
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches;
+  } catch {
+    return false;
+  }
+}
+
 export function readTheme(): Theme {
   try {
     const stored = window.localStorage.getItem(THEME_KEY);
-    if (isTheme(stored)) return stored;
-    if (window.matchMedia("(prefers-color-scheme: light)").matches) return "light";
-    return DEFAULT_THEME;
+    return isTheme(stored) ? stored : DEFAULT_THEME;
   } catch {
     return DEFAULT_THEME;
   }
+}
+
+export function applyTheme(choice: Theme) {
+  const resolved = resolveTheme(choice, prefersLight());
+  document.documentElement.setAttribute("data-theme", resolved);
+  document.documentElement.setAttribute("data-theme-choice", choice);
 }
 
 export function writeLocale(next: Locale) {
@@ -56,7 +68,7 @@ export function writeTheme(next: Theme) {
   } catch {
     /* private mode */
   }
-  document.documentElement.setAttribute("data-theme", next);
+  applyTheme(next);
   emit();
 }
 

@@ -26,9 +26,10 @@ describe("featured work", () => {
     }
   });
 
-  it("gives Habit Breaker a live URL and no repo", () => {
+  it("gives Habit Breaker a live URL, a case study, and no repo", () => {
     const habit = featured.find((item) => item.name === "Habit Breaker");
     expect(habit?.live).toMatch(/^https:\/\//);
+    expect(habit?.caseStudy).toBe("habit-breaker");
     expect(habit?.private).toBe(true);
     expect(habit?.repo).toBeUndefined();
   });
