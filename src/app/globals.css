@@ -105,6 +105,11 @@ html, body {
   font-synthesis: none;
 }
 
+input, textarea, select {
+  font: inherit;
+  text-transform: none;
+}
+
 a { color: var(--brass); text-decoration: none; }
 a:hover { text-decoration: underline; }
 :focus-visible {

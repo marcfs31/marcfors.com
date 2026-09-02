@@ -71,6 +71,8 @@ describe("displayed signals keep a stable layout", () => {
     expect(source("components/ThemeSwitcher.tsx")).toContain("writeTheme");
     expect(source("lib/theme.ts")).toContain("prefers-color-scheme");
     expect(desk).toContain("openId === \"intro\"");
+    expect(source("components/TraceTheater.tsx")).toContain('autoCapitalize="none"');
+    expect(source("app/layout.tsx")).toContain('autoCapitalize="none"');
     expect(source("components/Fold.tsx")).toContain("aria-expanded");
     expect(source("app/globals.css")).toContain(".fold:not(.open) .fold-panel");
     expect(source("app/globals.css")).toContain("display: none");

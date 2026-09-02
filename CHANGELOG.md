@@ -2,6 +2,10 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.4.1 — 2026-09-02
+
+- Do not autocapitalize typed input (iOS/macOS was capitalizing the first letter)
+
 ## 0.4.0 — 2026-09-02
 
 - Locale prefixes (`/es`, `/de`, …) with hreflang and sitemap entries
