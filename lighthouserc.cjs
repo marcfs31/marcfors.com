@@ -6,7 +6,8 @@ module.exports = {
       settings: {
         preset: "desktop",
         onlyCategories: ["performance"],
-        chromeFlags: "--no-sandbox --disable-dev-shm-usage --disable-gpu",
+        chromeFlags:
+          "--no-sandbox --disable-dev-shm-usage --disable-gpu --disable-features=HttpsFirstBalancedModeAutoEnable,HttpsFirstBalancedMode,HttpsUpgrades",
       },
     },
     assert: {
