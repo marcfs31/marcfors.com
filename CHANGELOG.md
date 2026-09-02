@@ -26,6 +26,14 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 - Lighthouse CI runs against that local build instead of `https://marcfors.com/`, three runs, asserting performance / accessibility / SEO scores plus CLS, LCP and TBT — so a regression fails the PR, not the deploy.
 - CI splits into `verify` and `e2e` jobs.
 
+### Hardening
+
+- Error observability, first-party only: `onRequestError` in `instrumentation.ts` logs structured server errors, and a `/api/errors` beacon (rate-limited, size-capped, validated) receives client-boundary reports from `error.tsx` and `global-error.tsx`. No third-party SDK, so the CSP stays intact.
+- `github.ts` sends an optional `Authorization: Bearer $GITHUB_TOKEN` to lift the unauthenticated shared-IP rate limit, and logs when the repo fetch fails instead of silently returning an empty list.
+- `@types/node` bumped to `^22` to match the Node version.
+
+Deferred (follow-up): splitting `copy.ts` into per-locale files, `@layer`-ing `globals.css`, and a hash/nonce CSP. A nonce CSP needs per-request rendering, which would undo the static generation above; Next's own inline bootstrap scripts have build-varying hashes, so `script-src` keeps `'unsafe-inline'` for now.
+
 ## 0.5.0 — 2026-09-02
 
 - System theme swatch follows the OS live; daylight/observatory stay explicit picks

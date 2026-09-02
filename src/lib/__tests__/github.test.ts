@@ -47,13 +47,27 @@ describe("fetchPublicRepos", () => {
     expect(String(fetchMock.mock.calls[0][0])).toContain(`/users/${GITHUB_USER}/repos`);
   });
 
-  it("returns an empty list on a non-ok response", async () => {
+  it("returns an empty list and logs on a non-ok response", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 403, json: async () => ({}) }));
     expect(await fetchPublicRepos()).toEqual([]);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('"status":403'));
+    warn.mockRestore();
   });
 
   it("returns an empty list when the request throws", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network")));
     expect(await fetchPublicRepos()).toEqual([]);
+    vi.restoreAllMocks();
+  });
+
+  it("sends a bearer token when GITHUB_TOKEN is set", async () => {
+    vi.stubEnv("GITHUB_TOKEN", "ghp_test");
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => [] });
+    vi.stubGlobal("fetch", fetchMock);
+    await fetchPublicRepos();
+    expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe("Bearer ghp_test");
+    vi.unstubAllEnvs();
   });
 });
