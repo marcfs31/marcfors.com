@@ -32,6 +32,8 @@ describe("locale copy", () => {
     expect(copy.en.headline).toMatch(/frontend software engineer/i);
     expect(copy.en.hirePath).toMatch(/recruiter/i);
     expect(copy.en.buildPath).toMatch(/custom/i);
+    expect(copy.en.seeking).toMatch(/react/i);
+    expect(copy.en.seeking).toMatch(/barcelona/i);
     expect(copy.en.hireCta).toMatch(/hire/i);
     expect(copy.en.buildCta).toMatch(/commission/i);
     expect(copy.en.contactLede).toMatch(/recruiter/i);

@@ -13,6 +13,7 @@ import {
   type VitalPayload,
 } from "@/lib/vitals";
 import type { Locale } from "@/lib/locale";
+import { SITE_URL } from "@/lib/site";
 import { copy } from "@/data/copy";
 
 type Health = {
@@ -141,9 +142,9 @@ export function SignalBoard({
         ))}
       </ul>
       <p className="muted">
-        <a href="/.well-known/security.txt">security.txt</a>
+        <a href={`${SITE_URL}/.well-known/security.txt`}>security.txt</a>
         {" · "}
-        <a href="/api/health">/api/health</a>
+        <a href={`${SITE_URL}/api/health`}>/api/health</a>
       </p>
     </div>
   );

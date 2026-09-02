@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { Emphasize } from "@/components/Emphasize";
 import { Fold } from "@/components/Fold";
 import { careerBreak, contact, copy, education, experience, languages, skills } from "@/data/copy";
 import type { Locale } from "@/lib/locale";
-import { LOCALE_CODES, LOCALE_LABELS, LOCALES } from "@/lib/locale";
+import { LOCALE_CODES, LOCALE_LABELS, LOCALES, stripLocale, withLocale } from "@/lib/locale";
 import { featured, lab, type Project } from "@/data/projects";
 import type { AuditSnapshot } from "@/lib/audit";
 import { RECRUITER_SKILLS, RECRUITER_TOKENS } from "@/lib/emphasize";
@@ -27,8 +29,9 @@ function projectLinks(project: Project, locale: Locale) {
           {t.live}
         </a>
       ) : null}
-      {project.href ? (
-        <a href={project.href}>{t.live}</a>
+      {project.href ? <Link href={withLocale(locale, project.href)}>{t.live}</Link> : null}
+      {project.caseStudy ? (
+        <Link href={withLocale(locale, `/work/${project.caseStudy}`)}>{t.caseStudy}</Link>
       ) : null}
       {project.repo && !project.private ? (
         <a href={project.repo} target="_blank" rel="noopener noreferrer">
@@ -67,17 +70,13 @@ export function Desk({
   audit: AuditSnapshot;
   initialLocale: Locale;
 }) {
-  const [locale, setLocale] = useState<Locale>(initialLocale);
+  const locale = initialLocale;
+  const pathname = usePathname();
   const t = copy[locale];
   const hits = t.hits;
   const tokens = [...hits, ...RECRUITER_TOKENS];
   const spotlight = featured.filter((item) => item.spotlight);
   const restWork = featured.filter((item) => !item.spotlight);
-
-  function setLang(next: Locale) {
-    setLocale(next);
-    writeLocale(next);
-  }
 
   const extraRepos = useMemo(() => {
     const featuredNames = new Set(featured.map((item) => item.name.toLowerCase().replace(/\s+/g, "-")));
@@ -90,12 +89,10 @@ export function Desk({
     });
   }, [repos]);
 
-  const foldIds = useMemo(() => {
-    const ids = ["intro", "work", "projects", "contact", "skills", "signal", "lab"];
-    if (extraRepos.length > 0) ids.push("more");
-    ids.push("edu");
-    return ids;
-  }, [extraRepos.length]);
+  const foldIds = useMemo(
+    () => ["intro", "work", "projects", "contact", "skills", "signal", "edu", "more"],
+    [],
+  );
 
   const { openId, open } = useFoldScroll(foldIds);
 
@@ -115,10 +112,10 @@ export function Desk({
       </a>
       <div className="wrap">
         <header className="top">
-          <a className="brand" href="#intro">
+          <Link className="brand" href={`${withLocale(locale, "/")}#intro`}>
             <BrandMark />
             {SITE_NAME}
-          </a>
+          </Link>
           <nav className="nav" aria-label={t.navLabel}>
             <a href="#work" onClick={() => open("work")}>
               {t.workTitle}
@@ -137,16 +134,17 @@ export function Desk({
             </a>
             <div className="langs" role="group" aria-label={t.lang}>
               {LOCALES.map((code) => (
-                <button
+                <Link
                   key={code}
-                  type="button"
+                  href={withLocale(code, stripLocale(pathname))}
                   lang={code}
+                  hrefLang={code}
                   aria-label={LOCALE_LABELS[code]}
-                  aria-pressed={locale === code}
-                  onClick={() => setLang(code)}
+                  aria-current={locale === code ? "page" : undefined}
+                  onClick={() => writeLocale(code)}
                 >
                   {LOCALE_CODES[code]}
-                </button>
+                </Link>
               ))}
             </div>
             <ThemeSwitcher locale={locale} />
@@ -166,6 +164,7 @@ export function Desk({
             <div className="hero">
               <h1>{SITE_NAME}</h1>
               <p className="role">{t.headline}</p>
+              <p className="seeking">{t.seeking}</p>
               <p className="tagline">{t.tagline}</p>
               <div className="meta-row">
                 <span className="hit">{t.place}</span>
@@ -182,6 +181,9 @@ export function Desk({
                 <a className="cta ghost" href={mailTo(t.buildSubject)}>
                   {t.buildCta}
                 </a>
+                <Link className="cta ghost" href={withLocale(locale, "/print")}>
+                  {t.printCta}
+                </Link>
               </div>
               <a className="hero-email" href={`mailto:${contact.email}`}>
                 {contact.email}
@@ -356,48 +358,6 @@ export function Desk({
           </Fold>
 
           <Fold
-            id="lab"
-            title={t.labTitle}
-            open={openId === "lab"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
-            <p className="lede">{t.labLede}</p>
-            <ul className="lab-list">
-              {lab.map((idea) => (
-                <li key={idea.name}>
-                  {idea.href ? <a href={idea.href}>{idea.name}</a> : <strong>{idea.name}</strong>}
-                  <span className="muted"> — {idea.blurb[locale]}</span>
-                </li>
-              ))}
-            </ul>
-          </Fold>
-
-          {extraRepos.length > 0 ? (
-            <Fold
-              id="more"
-              title={t.moreTitle}
-              open={openId === "more"}
-              expandLabel={t.expand}
-              collapseLabel={t.collapse}
-              onOpen={open}
-            >
-              {extraRepos.slice(0, 8).map((repo) => (
-                <div className="repo-row" key={repo.html_url}>
-                  <div>
-                    <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
-                      {repo.name}
-                    </a>
-                    <div className="muted">{repo.description ?? repo.language}</div>
-                  </div>
-                  <span className="muted">{repo.language}</span>
-                </div>
-              ))}
-            </Fold>
-          ) : null}
-
-          <Fold
             id="edu"
             title={t.eduTitle}
             open={openId === "edu"}
@@ -413,10 +373,52 @@ export function Desk({
             <h3 className="subhead">{t.langsTitle}</h3>
             <p>{languages[locale]}</p>
           </Fold>
+
+          <Fold
+            id="more"
+            title={t.atticTitle}
+            open={openId === "more"}
+            expandLabel={t.expand}
+            collapseLabel={t.collapse}
+            onOpen={open}
+          >
+            <h3 className="subhead">{t.labTitle}</h3>
+            <p className="lede">{t.labLede}</p>
+            <ul className="lab-list">
+              {lab.map((idea) => (
+                <li key={idea.name}>
+                  {idea.href ? (
+                    <Link href={withLocale(locale, idea.href)}>{idea.name}</Link>
+                  ) : (
+                    <strong>{idea.name}</strong>
+                  )}
+                  <span className="muted"> — {idea.blurb[locale]}</span>
+                </li>
+              ))}
+            </ul>
+            {extraRepos.length > 0 ? (
+              <>
+                <h3 className="subhead">{t.moreTitle}</h3>
+                {extraRepos.slice(0, 8).map((repo) => (
+                  <div className="repo-row" key={repo.html_url}>
+                    <div>
+                      <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
+                        {repo.name}
+                      </a>
+                      <div className="muted">{repo.description ?? repo.language}</div>
+                    </div>
+                    <span className="muted">{repo.language}</span>
+                  </div>
+                ))}
+              </>
+            ) : null}
+          </Fold>
         </main>
 
         <footer>
           <span>{t.footer}</span>
+          {" · "}
+          <Link href={withLocale(locale, "/print")}>{t.printCta}</Link>
           {" · "}
           <a href={SITE_REPO} target="_blank" rel="noopener noreferrer">
             {t.source}

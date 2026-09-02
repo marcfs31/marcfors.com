@@ -57,12 +57,17 @@ describe("displayed signals keep a stable layout", () => {
     expect(desk).toContain("--spot-x");
     expect(desk).not.toMatch(/setSpot/);
     expect(source("app/layout.tsx")).toContain('display: "swap"');
-    expect(source("app/page.tsx")).toContain("initialLocale");
+    expect(source("app/[locale]/page.tsx")).toContain("initialLocale");
     expect(desk).toContain("<h1>{SITE_NAME}</h1>");
     expect(desk).toContain('className="role"');
     expect(desk).toContain("SITE_REPO");
     expect(desk).toContain("useFoldScroll");
     expect(desk).toContain("ThemeSwitcher");
+    expect(desk).toContain("seeking");
+    expect(desk).toContain("atticTitle");
+    expect(desk).not.toContain('id="lab"');
+    expect(source("lib/useFoldScroll.ts")).toContain("ArrowDown");
+    expect(source("app/globals.css")).toContain("position: sticky");
     expect(source("components/ThemeSwitcher.tsx")).toContain("writeTheme");
     expect(source("lib/theme.ts")).toContain("prefers-color-scheme");
     expect(desk).toContain("openId === \"intro\"");

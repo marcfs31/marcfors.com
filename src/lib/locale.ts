@@ -39,3 +39,31 @@ export function localeCookie(value: Locale, secure = false): string {
   const extra = secure ? "; Secure" : "";
   return `${LOCALE_KEY}=${value}; Path=/; Max-Age=31536000; SameSite=Lax${extra}`;
 }
+
+export function stripLocale(pathname: string): string {
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts[0] && isLocale(parts[0])) {
+    const rest = parts.slice(1).join("/");
+    return rest ? `/${rest}` : "/";
+  }
+  return pathname.startsWith("/") ? pathname : `/${pathname}`;
+}
+
+export function withLocale(locale: Locale, pathname = "/"): string {
+  const path = stripLocale(pathname);
+  if (locale === DEFAULT_LOCALE) return path;
+  return path === "/" ? `/${locale}` : `/${locale}${path}`;
+}
+
+export function localeUrl(locale: Locale, pathname = "/", origin: string): string {
+  const rel = withLocale(locale, pathname);
+  return rel === "/" ? origin : `${origin}${rel}`;
+}
+
+export function languageAlternates(pathname: string, origin: string): Record<string, string> {
+  const languages: Record<string, string> = { "x-default": localeUrl(DEFAULT_LOCALE, pathname, origin) };
+  for (const locale of LOCALES) {
+    languages[locale] = localeUrl(locale, pathname, origin);
+  }
+  return languages;
+}

@@ -265,6 +265,7 @@ a:hover { text-decoration: underline; }
 }
 
 .nav button[aria-pressed="true"],
+.nav a[aria-current="page"],
 .nav a:hover,
 .nav button:hover {
   color: var(--paper);
@@ -284,7 +285,11 @@ a:hover { text-decoration: underline; }
 }
 
 .fold-heading {
+  position: sticky;
+  top: 0;
+  z-index: 6;
   margin: 0;
+  background: var(--ink);
 }
 
 .fold-head {
@@ -295,7 +300,7 @@ a:hover { text-decoration: underline; }
   gap: 16px;
   min-height: 56px;
   padding: 10px 0;
-  background: none;
+  background: var(--ink);
   border: 0;
   color: var(--paper-dim);
   font: inherit;
@@ -376,6 +381,13 @@ h1 {
   color: var(--brass);
   max-width: 22ch;
   min-height: 1.15em;
+}
+.seeking {
+  margin: 0;
+  color: var(--signal);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .tagline {
@@ -801,6 +813,56 @@ footer {
   h1 { font-size: 40px; }
   .cta { width: 100%; }
   .tip { width: min(240px, 86vw); }
+}
+
+.case {
+  display: grid;
+  gap: 8px;
+  max-width: 62ch;
+}
+.case section {
+  margin: 28px 0;
+}
+.print-cv {
+  display: grid;
+  gap: 8px;
+  max-width: 72ch;
+}
+.print-cv h1 {
+  white-space: normal;
+}
+.print-cv h2 {
+  margin: 28px 0 8px;
+}
+.print-cv h3 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 16px 0 6px;
+}
+
+@media print {
+  .print-chrome,
+  .skip,
+  .grid,
+  .spot,
+  .nav,
+  footer {
+    display: none !important;
+  }
+  html, body {
+    background: #fff;
+    color: #111;
+  }
+  .print-cv,
+  .print-cv h1,
+  .print-cv h2,
+  .print-cv h3,
+  .print-cv .role,
+  .print-cv .seeking {
+    color: #111;
+  }
+  a { color: #111; text-decoration: none; }
+  @page { margin: 16mm; }
 }
 
 @media (prefers-reduced-motion: reduce) {

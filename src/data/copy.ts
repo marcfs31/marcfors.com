@@ -51,6 +51,15 @@ type UiCopy = {
   navLabel: string;
   expand: string;
   collapse: string;
+  seeking: string;
+  printCta: string;
+  printTitle: string;
+  printHint: string;
+  caseStudy: string;
+  problem: string;
+  approach: string;
+  result: string;
+  atticTitle: string;
   hits: readonly string[];
   vitalGood: string;
   vitalDefs: {
@@ -151,6 +160,15 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Primary",
     expand: "Open",
     collapse: "Close",
+    seeking: "Frontend · React · Barcelona or remote EU · available now",
+    printCta: "Print CV",
+    printTitle: "Curriculum",
+    printHint: "Use the print dialog to save a PDF.",
+    caseStudy: "Case study",
+    problem: "Problem",
+    approach: "Approach",
+    result: "Result",
+    atticTitle: "More",
     hits: [
       "Seven-plus years",
       "observability, fintech, banking and government",
@@ -259,6 +277,15 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principal",
     expand: "Abrir",
     collapse: "Cerrar",
+    seeking: "Frontend · React · Barcelona o remoto UE · disponible ahora",
+    printCta: "Imprimir CV",
+    printTitle: "Currículum",
+    printHint: "Usa el diálogo de impresión para guardar un PDF.",
+    caseStudy: "Caso de estudio",
+    problem: "Problema",
+    approach: "Enfoque",
+    result: "Resultado",
+    atticTitle: "Más",
     hits: [
       "Más de siete años",
       "observabilidad, fintech, banca y administración",
@@ -367,6 +394,15 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principal",
     expand: "Obre",
     collapse: "Tanca",
+    seeking: "Frontend · React · Barcelona o remot UE · disponible ara",
+    printCta: "Imprimeix el CV",
+    printTitle: "Currículum",
+    printHint: "Fes servir el diàleg d'impressió per desar un PDF.",
+    caseStudy: "Estudi de cas",
+    problem: "Problema",
+    approach: "Enfocament",
+    result: "Resultat",
+    atticTitle: "Més",
     hits: [
       "Més de set anys",
       "observabilitat, fintech, banca i administració",
@@ -475,6 +511,15 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principale",
     expand: "Apri",
     collapse: "Chiudi",
+    seeking: "Frontend · React · Barcellona o remoto UE · disponibile ora",
+    printCta: "Stampa CV",
+    printTitle: "Curriculum",
+    printHint: "Usa la finestra di stampa per salvare un PDF.",
+    caseStudy: "Caso di studio",
+    problem: "Problema",
+    approach: "Approccio",
+    result: "Risultato",
+    atticTitle: "Altro",
     hits: [
       "Oltre sette anni",
       "observability, fintech, banking e pubblica amministrazione",
@@ -583,6 +628,15 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Principal",
     expand: "Abrir",
     collapse: "Fechar",
+    seeking: "Frontend · React · Barcelona ou remoto UE · disponível agora",
+    printCta: "Imprimir CV",
+    printTitle: "Currículo",
+    printHint: "Usa o diálogo de impressão para guardar um PDF.",
+    caseStudy: "Estudo de caso",
+    problem: "Problema",
+    approach: "Abordagem",
+    result: "Resultado",
+    atticTitle: "Mais",
     hits: [
       "Mais de sete anos",
       "observabilidade, fintech, banca e administração",
@@ -691,6 +745,15 @@ export const copy: Record<Locale, UiCopy> = {
     navLabel: "Primär",
     expand: "Öffnen",
     collapse: "Schließen",
+    seeking: "Frontend · React · Barcelona oder remote EU · sofort verfügbar",
+    printCta: "Lebenslauf drucken",
+    printTitle: "Lebenslauf",
+    printHint: "Im Druckdialog als PDF speichern.",
+    caseStudy: "Fallstudie",
+    problem: "Problem",
+    approach: "Vorgehen",
+    result: "Ergebnis",
+    atticTitle: "Mehr",
     hits: [
       "Mehr als sieben Jahre",
       "Observability, Fintech, Banking und Verwaltung",

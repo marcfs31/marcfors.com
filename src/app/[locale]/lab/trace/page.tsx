@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { TraceTheater } from "@/components/TraceTheater";
 import { copy } from "@/data/copy";
-import { DEFAULT_LOCALE, isLocale, LOCALE_KEY } from "@/lib/locale";
+import { isLocale, withLocale } from "@/lib/locale";
 import { SITE_NAME } from "@/lib/site";
 
 export const metadata = {
@@ -10,18 +10,18 @@ export const metadata = {
   robots: { index: false, follow: true },
 };
 
-export default async function TracePage() {
-  const stored = (await cookies()).get(LOCALE_KEY)?.value;
-  const locale = isLocale(stored) ? stored : DEFAULT_LOCALE;
+export default async function TracePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
   const t = copy[locale];
 
   return (
     <div className="wrap">
       <header className="top">
-        <Link className="brand" href="/">
+        <Link className="brand" href={withLocale(locale, "/")}>
           {SITE_NAME}
         </Link>
-        <Link href="/">{t.homeCta}</Link>
+        <Link href={withLocale(locale, "/")}>{t.homeCta}</Link>
       </header>
       <main id="main">
         <TraceTheater locale={locale} />

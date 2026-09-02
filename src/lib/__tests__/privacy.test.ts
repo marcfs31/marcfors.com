@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { careerBreak, contact, copy, education, experience, languages } from "@/data/copy";
+import { CASE_STUDIES } from "@/data/caseStudies";
 import { featured, lab } from "@/data/projects";
 import { BANNED_PUBLIC_PATTERNS, DEV_EMAIL, SITE_HOST, SITE_REPO, SITE_URL } from "@/lib/site";
 
@@ -13,6 +14,7 @@ function corpus(): string {
     languages,
     featured,
     lab,
+    CASE_STUDIES,
     SITE_HOST,
     SITE_URL,
     SITE_REPO,

@@ -24,7 +24,7 @@ Public personal portfolio for Marc Fors, hosted at **https://marcfors.com**. Obs
 
 - Next.js 16 App Router, React 19, CSS custom properties in `src/app/globals.css`.
 - No Tailwind, no shadcn, no hardcoded `bg-emerald-*`.
-- Locale is a client toggle (EN/ES/CA/IT/PT/DE) persisted in `localStorage`.
+- Locale is in the URL (`/` English, `/es`, `/de`, …) with `hreflang`. Cookie still remembers the last pick.
 - `prefers-reduced-motion` hides the pointer spotlight.
 - Copy lives in `src/data/copy.ts`. Featured work in `src/data/projects.ts`. Domain/email constants in `src/lib/site.ts`.
 

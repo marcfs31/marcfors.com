@@ -2,6 +2,13 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.4.0 — 2026-09-02
+
+- Locale prefixes (`/es`, `/de`, …) with hreflang and sitemap entries
+- Hire line under the role; sticky fold titles; j/k and arrow keys move folds
+- iTerm Studio case study; print/PDF CV from the same copy
+- Lab and extra repos tucked under More; Lighthouse CLS budget 0.1 in CI
+
 ## 0.3.0 — 2026-09-02
 
 - Theme switcher: daylight paper, observatory, signal green, night blue, footlights. Follows `prefers-color-scheme` until you pick one.

@@ -7,6 +7,7 @@ export type Project = {
   repo?: string;
   live?: string;
   href?: string;
+  caseStudy?: string;
   private?: boolean;
   spotlight?: boolean;
 };
@@ -83,6 +84,7 @@ export const featured: Project[] = [
     stack: ["Python"],
     repo: "https://github.com/marcfs31/iterm-studio",
     live: "https://marcfs31.github.io/iterm-studio/",
+    caseStudy: "iterm-studio",
     spotlight: true,
   },
   {

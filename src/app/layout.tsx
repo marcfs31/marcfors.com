@@ -1,8 +1,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { Fraunces, IBM_Plex_Mono } from "next/font/google";
-import { DEFAULT_LOCALE, isLocale, LOCALE_KEY, LOCALES, OG_LOCALES } from "@/lib/locale";
+import { DEFAULT_LOCALE, isLocale, languageAlternates, LOCALES, OG_LOCALES } from "@/lib/locale";
 import { DEV_EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_NAME, SITE_URL } from "@/lib/site";
 import { ANTI_FLASH_SCRIPT } from "@/lib/theme";
 import "./globals.css";
@@ -27,8 +27,8 @@ const description =
   "Frontend software engineer in Barcelona. React, TypeScript, Angular. Previously Dynatrace Dashboards and Notebooks, CREALOGIX banking, T-Systems Justice.";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const stored = (await cookies()).get(LOCALE_KEY)?.value;
-  const lang = isLocale(stored) ? stored : DEFAULT_LOCALE;
+  const headerLocale = (await headers()).get("x-locale");
+  const lang = isLocale(headerLocale) ? headerLocale : DEFAULT_LOCALE;
 
   return {
     title,
@@ -38,7 +38,9 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: SITE_NAME, url: SITE_URL }],
     creator: SITE_NAME,
     keywords: ["Marc Fors", "frontend software engineer", "React", "TypeScript", "Angular", "Barcelona"],
-    alternates: { canonical: SITE_URL },
+    alternates: {
+      languages: languageAlternates("/", SITE_URL),
+    },
     robots: { index: true, follow: true },
     openGraph: {
       title,
@@ -74,8 +76,8 @@ const jsonLd = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const stored = (await cookies()).get(LOCALE_KEY)?.value;
-  const lang = isLocale(stored) ? stored : DEFAULT_LOCALE;
+  const headerLocale = (await headers()).get("x-locale");
+  const lang = isLocale(headerLocale) ? headerLocale : DEFAULT_LOCALE;
 
   return (
     <html lang={lang} className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>

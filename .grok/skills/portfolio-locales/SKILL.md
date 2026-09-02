@@ -15,4 +15,4 @@ Source of truth for the locale list is `LOCALES` in `src/lib/locale.ts`. Adding 
 
 `src/lib/__tests__/copy.test.ts` fails if keys drift. Native names stay in `LOCALE_LABELS`, not in copy.
 
-Locale is a client toggle (cookie + localStorage). Do not invent URL prefixes unless the routing is rebuilt.
+Locale lives in the URL: `/` is English, `/es`, `/de` and the rest are prefixes. `withLocale` / `stripLocale` in `src/lib/locale.ts`. Cookie still remembers the last pick. Middleware rewrites unprefixed paths to `/en/...` internally and redirects `/en` to `/`.

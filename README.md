@@ -1,6 +1,6 @@
 # marcfors.com
 
-Personal site for Marc Fors. Observatory desk, six locales (EN, ES, CA, IT, PT, DE).
+Personal site for Marc Fors. Observatory desk. Locales: `/` English, `/es`, `/ca`, `/it`, `/pt`, `/de`. Print CV at `/print`. Case study: `/work/iterm-studio`.
 
 Source: [github.com/marcfs31/marcfors.com](https://github.com/marcfs31/marcfors.com). Live: [marcfors.com](https://marcfors.com).
 

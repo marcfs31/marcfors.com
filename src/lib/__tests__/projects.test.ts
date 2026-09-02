@@ -33,10 +33,11 @@ describe("featured work", () => {
     expect(habit?.repo).toBeUndefined();
   });
 
-  it("lists iTerm Studio with public source and the hosted gallery", () => {
+  it("lists iTerm Studio with public source, gallery, and a case study", () => {
     const studio = featured.find((item) => item.name === "iTerm Studio");
     expect(studio?.repo).toBe("https://github.com/marcfs31/iterm-studio");
     expect(studio?.live).toBe("https://marcfs31.github.io/iterm-studio/");
+    expect(studio?.caseStudy).toBe("iterm-studio");
     expect(studio?.private).toBeFalsy();
     expect(studio?.spotlight).toBe(true);
   });

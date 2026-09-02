@@ -38,3 +38,5 @@ jobs:
       - run: npm run lint
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run build
+      - name: Lighthouse CLS budget
+        run: npx --yes @lhci/cli@0.14.0 autorun

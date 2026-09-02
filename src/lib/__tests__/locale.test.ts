@@ -6,6 +6,8 @@ import {
   LOCALE_KEY,
   LOCALE_LABELS,
   OG_LOCALES,
+  stripLocale,
+  withLocale,
 } from "@/lib/locale";
 
 describe("locales", () => {
@@ -17,6 +19,16 @@ describe("locales", () => {
     expect(OG_LOCALES.it).toBe("it_IT");
     expect(isLocale("de")).toBe(true);
     expect(isLocale("fr")).toBe(false);
+  });
+
+  it("puts non-English locales in the path and keeps English at root", () => {
+    expect(withLocale("en", "/")).toBe("/");
+    expect(withLocale("es", "/")).toBe("/es");
+    expect(withLocale("de", "/work/iterm-studio")).toBe("/de/work/iterm-studio");
+    expect(withLocale("en", "/print")).toBe("/print");
+    expect(stripLocale("/es/print")).toBe("/print");
+    expect(stripLocale("/de")).toBe("/");
+    expect(stripLocale("/work/iterm-studio")).toBe("/work/iterm-studio");
   });
 
   it("sets Secure on the locale cookie only when asked", () => {
