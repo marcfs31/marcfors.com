@@ -5,7 +5,7 @@ description: Observatory desk visual language for marcfors.com. Use when changin
 
 # Signal desk
 
-Palette tokens live in `src/app/globals.css` (`--ink`, `--brass`, `--paper`, `--signal`). No Tailwind, no shadcn.
+Palette tokens live in `src/lib/themePalettes.ts` and are applied as `[data-theme]` in `src/app/globals.css` (`--ink`, `--brass`, `--paper`, `--signal`). Switcher is `ThemeSwitcher`. No Tailwind, no shadcn.
 
 ## Live signal stays green
 

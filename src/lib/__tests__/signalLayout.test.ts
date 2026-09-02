@@ -62,6 +62,9 @@ describe("displayed signals keep a stable layout", () => {
     expect(desk).toContain('className="role"');
     expect(desk).toContain("SITE_REPO");
     expect(desk).toContain("useFoldScroll");
+    expect(desk).toContain("ThemeSwitcher");
+    expect(source("components/ThemeSwitcher.tsx")).toContain("writeTheme");
+    expect(source("lib/theme.ts")).toContain("prefers-color-scheme");
     expect(desk).toContain("openId === \"intro\"");
     expect(source("components/Fold.tsx")).toContain("aria-expanded");
     expect(source("app/globals.css")).toContain(".fold:not(.open) .fold-panel");

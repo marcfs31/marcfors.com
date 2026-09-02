@@ -2,6 +2,10 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.3.0 — 2026-09-02
+
+- Theme switcher: daylight paper, observatory, signal green, night blue, footlights. Follows `prefers-color-scheme` until you pick one.
+
 ## 0.2.2 — 2026-09-02
 
 - Folds actually show their content (the 0fr grid row was collapsing open panels to zero height)

@@ -13,6 +13,7 @@ import { RECRUITER_SKILLS, RECRUITER_TOKENS } from "@/lib/emphasize";
 import type { GhRepo } from "@/lib/github";
 import { mailTo } from "@/lib/mail";
 import { writeLocale } from "@/lib/prefs";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SITE_NAME, SITE_REPO } from "@/lib/site";
 import { useFoldScroll } from "@/lib/useFoldScroll";
 import { SignalBoard } from "@/components/SignalBoard";
@@ -148,6 +149,7 @@ export function Desk({
                 </button>
               ))}
             </div>
+            <ThemeSwitcher locale={locale} />
           </nav>
         </header>
 

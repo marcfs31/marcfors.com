@@ -15,6 +15,24 @@ export type ThemePalette = {
   glow: string;
 };
 
+export function cssVars(palette: ThemePalette): Record<string, string> {
+  return {
+    "--ink": palette.bg,
+    "--bg2": palette.bg2,
+    "--panel": palette.surface,
+    "--line": palette.line,
+    "--paper": palette.fg,
+    "--paper-dim": palette.fgDim,
+    "--muted": palette.muted,
+    "--brass": palette.accent,
+    "--brass-ink": palette.accentFg,
+    "--signal": palette.signal,
+    "--danger": palette.danger,
+    "--spot": palette.spot,
+    "--glow": palette.glow,
+  };
+}
+
 export const THEME_PALETTES: Record<"light" | "dark" | "green" | "blue" | "red", ThemePalette> = {
   dark: {
     bg: "#10141c",
@@ -88,7 +106,7 @@ export const THEME_PALETTES: Record<"light" | "dark" | "green" | "blue" | "red",
     fg: "#fde8ea",
     fgDim: "#e3b4bb",
     muted: "#a0727a",
-    accent: "#e11d48",
+    accent: "#be123c",
     accentFg: "#fff5f6",
     signal: "#fda4af",
     danger: "#f97316",

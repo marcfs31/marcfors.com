@@ -31,7 +31,9 @@ export function readLocale(): Locale {
 export function readTheme(): Theme {
   try {
     const stored = window.localStorage.getItem(THEME_KEY);
-    return isTheme(stored) ? stored : DEFAULT_THEME;
+    if (isTheme(stored)) return stored;
+    if (window.matchMedia("(prefers-color-scheme: light)").matches) return "light";
+    return DEFAULT_THEME;
   } catch {
     return DEFAULT_THEME;
   }
