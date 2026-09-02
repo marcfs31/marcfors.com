@@ -39,4 +39,7 @@ jobs:
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run build
       - name: Lighthouse CLS budget
-        run: npx --yes @lhci/cli@0.14.0 autorun
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 3000 &
+          npx --yes wait-on@8 http://127.0.0.1:3000 --timeout 60000
+          npx --yes @lhci/cli@0.14.0 autorun
