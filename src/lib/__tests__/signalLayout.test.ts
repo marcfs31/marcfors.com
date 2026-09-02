@@ -54,9 +54,9 @@ describe("displayed signals keep a stable layout", () => {
     const desk = source("components/Desk.tsx");
     expect(desk).not.toMatch(/\buseEffect\b/);
     expect(desk).toContain("initialLocale");
-    expect(desk).toContain("--spot-x");
+    expect(desk).toContain("createSpotlightMove");
     expect(desk).not.toMatch(/setSpot/);
-    expect(source("app/layout.tsx")).toContain('display: "swap"');
+    expect(source("app/[locale]/layout.tsx")).toContain('display: "swap"');
     expect(source("app/[locale]/page.tsx")).toContain("initialLocale");
     expect(desk).toContain("<h1>{SITE_NAME}</h1>");
     expect(desk).toContain('className="role"');
@@ -78,8 +78,8 @@ describe("displayed signals keep a stable layout", () => {
     expect(source("lib/theme.ts")).toContain("prefers-color-scheme");
     expect(source("proxy.ts")).toContain("export function proxy");
     expect(source("proxy.ts")).toContain("preferredLocale");
-    expect(source("app/layout.tsx")).toContain("knowsAbout");
-    expect(source("app/layout.tsx")).toContain("seeks");
+    expect(source("app/[locale]/layout.tsx")).toContain("knowsAbout");
+    expect(source("app/[locale]/layout.tsx")).toContain("seeks");
     expect(desk).toContain("openId === \"intro\"");
     expect(source("components/Fold.tsx")).toContain("aria-expanded");
     expect(source("app/globals.css")).toContain(".fold:not(.open) .fold-panel");

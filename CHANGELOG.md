@@ -2,6 +2,21 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.6.0 — 2026-09-02
+
+### Rendering
+
+- The whole localized site is statically prerendered again. The root layout no longer reads a per-request value, so `/`, `/<locale>`, `/work/<slug>`, `/print` and `/lab/trace` ship as static HTML instead of rendering on every request. The `<html>`/`<body>` shell, fonts, JSON-LD and anti-flash script moved into `app/[locale]/layout.tsx`.
+- Added a `global-error` boundary with its own shell for failures in the root layout itself.
+- Single self-contained 404 surface (`app/not-found.tsx`) with its own shell; it is English-only so it can stay static.
+
+### Fixes
+
+- Sitemap `lastModified` is pinned to the release date instead of `new Date()`, so it no longer tells crawlers every URL changed on every fetch.
+- Fold navigation (`j`/`k`/arrows) no longer fights the scroll listener: a short quiet window after a programmatic pin stops `openId` bouncing back.
+- Pointer spotlight writes are coalesced to one per animation frame.
+- Proof line emphasises every curated token, including the Italian "Barcellona" the old English-only check missed.
+
 ## 0.5.0 — 2026-09-02
 
 - System theme swatch follows the OS live; daylight/observatory stay explicit picks

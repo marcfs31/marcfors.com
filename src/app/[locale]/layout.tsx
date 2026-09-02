@@ -1,14 +1,33 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Fraunces, IBM_Plex_Mono } from "next/font/google";
 import { isLocale, languageAlternates, LOCALES, localeUrl, OG_LOCALES, type Locale } from "@/lib/locale";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { DEV_EMAIL, GITHUB_URL, LINKEDIN_URL, SITE_NAME, SITE_URL } from "@/lib/site";
+import { ANTI_FLASH_SCRIPT } from "@/lib/theme";
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
 
-export const dynamicParams = false;
+// `dynamicParams` is left at its default (true) so that on-demand `notFound()`
+// renders (e.g. `/de/work/<unknown-slug>`) can still reach `app/[locale]/not-found.tsx`.
+// Unknown locales are rejected explicitly by the `isLocale` guards below.
+
+const serif = Fraunces({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-serif-loaded",
+  display: "swap",
+  adjustFontFallback: true,
+});
+
+const mono = IBM_Plex_Mono({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500"],
+  variable: "--font-mono-loaded",
+  display: "swap",
+  adjustFontFallback: true,
+});
 
 const title = `${SITE_NAME} — Frontend software engineer`;
 const description =
@@ -41,6 +60,25 @@ export async function generateMetadata({
   };
 }
 
+function jsonLd(locale: Locale) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: SITE_NAME,
+    url: localeUrl(locale, "/", SITE_URL),
+    email: DEV_EMAIL,
+    jobTitle: "Frontend software engineer",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Barcelona",
+      addressCountry: "ES",
+    },
+    sameAs: [GITHUB_URL, LINKEDIN_URL],
+    knowsAbout: ["React", "TypeScript", "Angular", "Next.js", "observability", "Playwright"],
+    seeks: "Frontend software engineer roles in Barcelona or remote EU, open from December 2025",
+  };
+}
+
 export default async function LocaleLayout({
   children,
   params,
@@ -50,5 +88,24 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return children;
+
+  return (
+    <html lang={locale} className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>
+      <body
+        style={
+          {
+            "--serif": "var(--font-serif-loaded), Fraunces, Georgia, serif",
+            "--mono": "var(--font-mono-loaded), ui-monospace, monospace",
+          } as CSSProperties
+        }
+      >
+        <script dangerouslySetInnerHTML={{ __html: ANTI_FLASH_SCRIPT }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd(locale)) }}
+        />
+        {children}
+      </body>
+    </html>
+  );
 }
