@@ -80,12 +80,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const lang = isLocale(headerLocale) ? headerLocale : DEFAULT_LOCALE;
 
   return (
-    <html
-      lang={lang}
-      className={`${serif.variable} ${mono.variable}`}
-      autoCapitalize="none"
-      suppressHydrationWarning
-    >
+    <html lang={lang} className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>
       <body
         style={
           {

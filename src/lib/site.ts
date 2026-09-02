@@ -1,7 +1,7 @@
 export const SITE_HOST = "marcfors.com";
 export const SITE_URL = `https://${SITE_HOST}`;
 export const SITE_NAME = "Marc Fors";
-export const SITE_VERSION = "0.4.1";
+export const SITE_VERSION = "0.4.2";
 export const DEV_EMAIL = "developer@marcfors.com";
 export const GITHUB_USER = "marcfs31";
 export const GITHUB_URL = `https://github.com/${GITHUB_USER}`;

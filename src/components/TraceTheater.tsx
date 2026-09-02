@@ -55,9 +55,6 @@ export function TraceTheater({ locale }: { locale: Locale }) {
         value={raw}
         onChange={(event) => setRaw(event.target.value)}
         spellCheck={false}
-        autoCapitalize="none"
-        autoCorrect="off"
-        autoComplete="off"
       />
       <div className="stage-actions">
         <button type="button" className="cta" onClick={() => setRaw(SAMPLE)}>

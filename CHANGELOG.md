@@ -2,9 +2,9 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
-## 0.4.1 — 2026-09-02
+## 0.4.2 — 2026-09-02
 
-- Do not autocapitalize typed input (iOS/macOS was capitalizing the first letter)
+- Revert the autocapitalize override from 0.4.1
 
 ## 0.4.0 — 2026-09-02
 
