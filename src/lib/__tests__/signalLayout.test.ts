@@ -11,26 +11,14 @@ import {
   VITALS_CARD_MIN_PX,
 } from "@/lib/vitals";
 
-const srcRoot = path.resolve(__dirname, "../..");
-
-function source(rel: string): string {
-  return readFileSync(path.join(srcRoot, rel), "utf8");
-}
+// Behaviour of the signal board itself is covered by SignalBoard.test.tsx and
+// Desk.test.tsx. What remains here is the CSS layout-stability contract — the one
+// thing that needs a real stylesheet and cannot be asserted from a jsdom render —
+// plus the numeric web-vitals rules the board depends on.
+const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
 
 describe("displayed signals keep a stable layout", () => {
-  it("renders a reserved meter for every vital, including pending", () => {
-    const board = source("components/SignalBoard.tsx");
-    expect(board).toContain("VITAL_NAMES.map");
-    expect(board).toContain("meter-value");
-    expect(board).toContain("vitals-card");
-    expect(board).toContain("health-line");
-    expect(board).not.toMatch(/vitals\.filter/);
-    expect(board).not.toMatch(/\{row &&/);
-    expect(VITAL_NAMES).toHaveLength(5);
-  });
-
-  it("CSS reserves width and height so pending values cannot shift the desk", () => {
-    const css = source("app/globals.css");
+  it("reserves width and height so a pending value cannot shift the desk", () => {
     expect(css).toContain("font-variant-numeric: tabular-nums");
     expect(css).toContain(`min-width: ${METER_VALUE_MIN_CH}ch`);
     expect(css).toContain(`min-height: ${VITALS_CARD_MIN_PX}px`);
@@ -42,55 +30,18 @@ describe("displayed signals keep a stable layout", () => {
     expect(css).toContain("white-space: nowrap");
   });
 
-  it("explains each web vital without shifting layout", () => {
-    const board = source("components/SignalBoard.tsx");
-    expect(board).toContain("vital-tip");
-    expect(board).toContain("VITAL_TITLES");
-    expect(board).toContain("formatGoodCeiling");
-    expect(board).toContain('role="tooltip"');
+  it("collapses closed folds with display:none, not zero height", () => {
+    expect(css).toContain(".fold:not(.open) .fold-panel");
+    expect(css).toContain("display: none");
+    expect(css).toContain("position: sticky");
   });
 
-  it("does not restore locale in an effect after first paint", () => {
-    const desk = source("components/Desk.tsx");
-    expect(desk).not.toMatch(/\buseEffect\b/);
-    expect(desk).toContain("initialLocale");
-    expect(desk).toContain("createSpotlightMove");
-    expect(desk).not.toMatch(/setSpot/);
-    expect(source("app/[locale]/layout.tsx")).toContain('display: "swap"');
-    expect(source("app/[locale]/page.tsx")).toContain("initialLocale");
-    expect(desk).toContain("<h1>{SITE_NAME}</h1>");
-    expect(desk).toContain('className="role"');
-    expect(desk).toContain("SITE_REPO");
-    expect(desk).toContain("useFoldScroll");
-    expect(desk).toContain("ThemeSwitcher");
-    expect(desk).toContain("LanguageSwitcher");
-    expect(desk).toContain("seeking");
-    expect(desk).toContain("proofMetric");
-    expect(desk).toContain("keyboardHint");
-    expect(desk).toContain("atticTitle");
-    expect(desk).not.toContain('id="lab"');
-    expect(source("lib/useFoldScroll.ts")).toContain("ArrowDown");
-    expect(source("app/globals.css")).toContain("position: sticky");
-    expect(source("app/globals.css")).toContain(".lang-select");
-    expect(source("app/globals.css")).toContain(".theme-extras");
-    expect(source("components/ThemeSwitcher.tsx")).toContain("writeTheme");
-    expect(source("components/ThemeSwitcher.tsx")).toContain("prefers-color-scheme");
-    expect(source("lib/theme.ts")).toContain("prefers-color-scheme");
-    expect(source("proxy.ts")).toContain("export function proxy");
-    expect(source("proxy.ts")).toContain("preferredLocale");
-    expect(source("app/[locale]/layout.tsx")).toContain("knowsAbout");
-    expect(source("app/[locale]/layout.tsx")).toContain("seeks");
-    expect(desk).toContain("openId === \"intro\"");
-    expect(source("components/Fold.tsx")).toContain("aria-expanded");
-    expect(source("app/globals.css")).toContain(".fold:not(.open) .fold-panel");
-    expect(source("app/globals.css")).toContain("display: none");
-  });
-
-  it("keeps every displayed vital’s good ceiling at the Core Web Vitals bar", () => {
+  it("keeps every displayed vital's good ceiling at the Core Web Vitals bar", () => {
     for (const name of VITAL_NAMES) {
       expect(ratingFor(name, VITAL_GOOD[name])).toBe("good");
       expect(ratingFor(name, VITAL_GOOD[name] + VITAL_GOOD[name] * 0.05)).not.toBe("good");
     }
+    expect(VITAL_NAMES).toHaveLength(5);
     expect(VITAL_GOOD.CLS).toBe(0.1);
     expect(formatVital("CLS", 0.012)).toBe("0.012");
     expect(formatVital("LCP", 1200.4)).toBe("1200 ms");

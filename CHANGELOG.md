@@ -17,6 +17,15 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 - Pointer spotlight writes are coalesced to one per animation frame.
 - Proof line emphasises every curated token, including the Italian "Barcellona" the old English-only check missed.
 
+### Testing & CI
+
+- Vitest now runs a `node` project for pure logic and a `jsdom` project for components and hooks. New behaviour tests replace the source-string assertions in `proxy` and `signalLayout`, and cover the previously untested `useFoldScroll`, `foldScroll`, `prefs`, `spotlight`, `github`, `sitemap`, `og`, and every component (`Desk`, `SignalBoard`, `TraceTheater`, `Fold`, `Emphasize`, `ThemeSwitcher`, `LanguageSwitcher`, `PrintDesk`, error boundaries). 53 → 119 tests.
+- `vitest-axe` fails the build on WCAG violations in the rendered desk.
+- Coverage (v8) is collected and gated in `npm run ci`.
+- Playwright smoke suite (`npm run test:e2e`) drives a local production build: home, locale switch, theme persistence, keyboard folds, print CV, `/api/health`, 404.
+- Lighthouse CI runs against that local build instead of `https://marcfors.com/`, three runs, asserting performance / accessibility / SEO scores plus CLS, LCP and TBT — so a regression fails the PR, not the deploy.
+- CI splits into `verify` and `e2e` jobs.
+
 ## 0.5.0 — 2026-09-02
 
 - System theme swatch follows the OS live; daylight/observatory stay explicit picks

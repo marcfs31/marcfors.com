@@ -16,8 +16,9 @@ npm run dev
 ```
 
 ```bash
-npm test
-npm run ci
+npm test           # unit + component (Vitest: node + jsdom)
+npm run test:e2e   # Playwright smoke against a local production build
+npm run ci         # privacy + coverage + typecheck + lint + audit + build
 ```
 
 ## Domain (`marcfors.com`)
