@@ -7,5 +7,6 @@ describe("lighthouse budget", () => {
     const config = readFileSync(path.resolve(__dirname, "../../../lighthouserc.cjs"), "utf8");
     expect(config).toContain("cumulative-layout-shift");
     expect(config).toContain("0.1");
+    expect(config).toContain("https://marcfors.com/");
   });
 });

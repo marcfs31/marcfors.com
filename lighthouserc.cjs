@@ -1,13 +1,12 @@
 module.exports = {
   ci: {
     collect: {
-      url: ["http://127.0.0.1:3000/"],
+      url: ["https://marcfors.com/"],
       numberOfRuns: 1,
       settings: {
         preset: "desktop",
         onlyCategories: ["performance"],
-        chromeFlags:
-          "--no-sandbox --disable-dev-shm-usage --disable-gpu --disable-features=HttpsFirstBalancedModeAutoEnable,HttpsFirstBalancedMode,HttpsUpgrades",
+        chromeFlags: "--no-sandbox --disable-dev-shm-usage --disable-gpu",
       },
     },
     assert: {
