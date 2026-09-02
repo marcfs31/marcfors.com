@@ -41,5 +41,6 @@ jobs:
       - name: Lighthouse CLS budget
         run: |
           npm run start -- --hostname 127.0.0.1 --port 3000 &
-          npx --yes wait-on@8 http://127.0.0.1:3000 --timeout 60000
+          npx --yes wait-on@8 tcp:127.0.0.1:3000 --timeout 60000
+          curl -fsS http://127.0.0.1:3000/ >/dev/null
           npx --yes @lhci/cli@0.14.0 autorun
