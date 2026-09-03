@@ -10,6 +10,11 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 - Added a `global-error` boundary with its own shell for failures in the root layout itself.
 - Single self-contained 404 surface (`app/not-found.tsx`) with its own shell; it is English-only so it can stay static.
 
+### SEO & polish
+
+- `robots.txt` now `Disallow`s `/print` and `/lab` (bare and locale-prefixed), and those routes also send `X-Robots-Tag: noindex, nofollow` — honoured even when the HTML is never parsed.
+- Adaptive `theme-color` / `color-scheme` meta so mobile browser chrome tracks the light/dark palette instead of one hard-coded colour.
+
 ### Fixes
 
 - Sitemap `lastModified` is pinned to the release date instead of `new Date()`, so it no longer tells crawlers every URL changed on every fetch.
@@ -19,7 +24,8 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 
 ### Testing & CI
 
-- Vitest now runs a `node` project for pure logic and a `jsdom` project for components and hooks. New behaviour tests replace the source-string assertions in `proxy` and `signalLayout`, and cover the previously untested `useFoldScroll`, `foldScroll`, `prefs`, `spotlight`, `github`, `sitemap`, `og`, and every component (`Desk`, `SignalBoard`, `TraceTheater`, `Fold`, `Emphasize`, `ThemeSwitcher`, `LanguageSwitcher`, `PrintDesk`, error boundaries). 53 → 119 tests.
+- Vitest now runs a `node` project for pure logic and a `jsdom` project for components and hooks. New behaviour tests replace the source-string assertions in `proxy` and `signalLayout`, and cover the previously untested `useFoldScroll`, `foldScroll`, `prefs`, `spotlight`, `github`, `sitemap`, `og`, `robots`, `next.config` headers, and every component (`Desk`, `SignalBoard`, `TraceTheater`, `Fold`, `Emphasize`, `ThemeSwitcher`, `LanguageSwitcher`, `PrintDesk`, error boundaries). 53 → 130+ tests.
+- A translation-drift test fails if a non-English locale's prose fields are left as the English copy.
 - `vitest-axe` fails the build on WCAG violations in the rendered desk.
 - Coverage (v8) is collected and gated in `npm run ci`.
 - Playwright smoke suite (`npm run test:e2e`) drives a local production build: home, locale switch, theme persistence, keyboard folds, print CV, `/api/health`, 404.

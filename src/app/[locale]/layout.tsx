@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { Fraunces, IBM_Plex_Mono } from "next/font/google";
 import { isLocale, languageAlternates, LOCALES, localeUrl, OG_LOCALES, type Locale } from "@/lib/locale";
@@ -32,6 +32,16 @@ const mono = IBM_Plex_Mono({
 const title = `${SITE_NAME} — Frontend software engineer`;
 const description =
   "Frontend software engineer in Barcelona. React, TypeScript, Angular. Previously Dynatrace Dashboards and Notebooks, CREALOGIX banking, T-Systems Justice.";
+
+// Match the paper/ink palette backgrounds (src/lib/themePalettes.ts) so the mobile
+// browser chrome tracks the active theme instead of a single hard-coded colour.
+export const viewport: Viewport = {
+  colorScheme: "dark light",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#10141c" },
+    { media: "(prefers-color-scheme: light)", color: "#f4efe4" },
+  ],
+};
 
 export async function generateMetadata({
   params,

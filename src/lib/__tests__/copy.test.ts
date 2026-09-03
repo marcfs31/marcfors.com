@@ -18,6 +18,16 @@ describe("locale copy", () => {
     }
   });
 
+  it("actually translates the prose fields (no English left in place)", () => {
+    const prose = ["lede", "contactLede", "hirePathLede", "buildPathLede", "notFoundBody", "errorBody"] as const;
+    for (const locale of LOCALES.filter((l) => l !== "en")) {
+      for (const key of prose) {
+        expect(copy[locale][key], `${locale}.${key}`).not.toBe(copy.en[key]);
+      }
+      expect(careerBreak[locale].body, `${locale} career break`).not.toBe(careerBreak.en.body);
+    }
+  });
+
   it("leads with the career break, not a current Dynatrace role", () => {
     expect(copy.en.breakTitle).toMatch(/career break/i);
     expect(careerBreak.en.when).toMatch(/Dec 2025/i);

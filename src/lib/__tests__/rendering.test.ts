@@ -38,6 +38,13 @@ describe("static rendering invariants", () => {
     expect(localeLayout).toContain("generateStaticParams");
   });
 
+  it("exports an adaptive theme-color viewport", () => {
+    const localeLayout = read("app/[locale]/layout.tsx");
+    expect(localeLayout).toMatch(/export const viewport: Viewport/);
+    expect(localeLayout).toContain("(prefers-color-scheme: dark)");
+    expect(localeLayout).toContain("(prefers-color-scheme: light)");
+  });
+
   it("ships a global-error boundary with its own html/body", () => {
     const globalError = read("app/global-error.tsx");
     expect(globalError).toMatch(/["'`]use client["'`]/);
