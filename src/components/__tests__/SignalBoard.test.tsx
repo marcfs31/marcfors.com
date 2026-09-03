@@ -1,0 +1,67 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { SignalBoard } from "@/components/SignalBoard";
+import { copy } from "@/data/copy";
+import { getAuditSnapshot } from "@/lib/audit";
+import { VITAL_NAMES } from "@/lib/vitals";
+
+vi.mock("web-vitals", () => ({
+  onLCP: vi.fn(),
+  onINP: vi.fn(),
+  onCLS: vi.fn(),
+  onFCP: vi.fn(),
+  onTTFB: vi.fn(),
+}));
+
+const audit = getAuditSnapshot();
+
+beforeEach(() => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue({
+      json: async () => ({
+        ok: true,
+        version: "9.9.9",
+        commit: "abcdef1234",
+        region: "fra1",
+        audit,
+      }),
+    }),
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.clearAllMocks();
+});
+
+describe("SignalBoard", () => {
+  it("reserves a meter for every vital before any data arrives", () => {
+    render(<SignalBoard audit={audit} locale="en" />);
+    const meters = document.querySelectorAll(".meter");
+    expect(meters).toHaveLength(VITAL_NAMES.length);
+    // every value cell starts as a pending dash
+    expect([...document.querySelectorAll(".meter-value")].every((n) => n.textContent === "—")).toBe(true);
+  });
+
+  it("renders the build-time audit snapshot counts", () => {
+    render(<SignalBoard audit={audit} locale="en" />);
+    expect(screen.getByText(`critical ${audit.critical}`)).toBeInTheDocument();
+    expect(screen.getByText(`high ${audit.high}`)).toBeInTheDocument();
+  });
+
+  it("swaps in the live health line once /api/health resolves", async () => {
+    render(<SignalBoard audit={audit} locale="en" />);
+    expect(screen.getByText(copy.en.healthWaiting)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/9\.9\.9 · abcdef1 · fra1/)).toBeInTheDocument();
+    });
+  });
+
+  it("keeps the build snapshot when /api/health fails", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+    render(<SignalBoard audit={audit} locale="en" />);
+    await waitFor(() => expect(screen.getByText(copy.en.healthWaiting)).toBeInTheDocument());
+    expect(screen.getByText(`critical ${audit.critical}`)).toBeInTheDocument();
+  });
+});

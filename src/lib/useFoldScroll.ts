@@ -3,11 +3,17 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { pickOpenFold, pinFold } from "./foldScroll";
 
+/** After a programmatic pin scroll, ignore scroll-driven fold changes for this long (ms). */
+export const PIN_QUIET_MS = 200;
+
 export function useFoldScroll(ids: readonly string[]) {
   const first = ids[0] ?? "";
   const [openId, setOpenId] = useState(first);
   const idsRef = useRef(ids);
   const skipPin = useRef(true);
+  // Timestamp until which scroll-sync is suppressed, so `pinFold`'s own `scrollBy`
+  // does not bounce `openId` back to the fold we just navigated away from.
+  const pinningUntil = useRef(0);
 
   useEffect(() => {
     idsRef.current = ids;
@@ -16,6 +22,7 @@ export function useFoldScroll(ids: readonly string[]) {
   useEffect(() => {
     let frame = 0;
     const syncFromScroll = () => {
+      if (performance.now() < pinningUntil.current) return;
       setOpenId((current) => {
         const next = pickOpenFold(idsRef.current);
         return next && next !== current ? next : current;
@@ -65,6 +72,7 @@ export function useFoldScroll(ids: readonly string[]) {
       skipPin.current = false;
       return;
     }
+    pinningUntil.current = performance.now() + PIN_QUIET_MS;
     pinFold(openId);
   }, [openId]);
 

@@ -2,6 +2,44 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.6.0 — 2026-09-02
+
+### Rendering
+
+- The whole localized site is statically prerendered again. The root layout no longer reads a per-request value, so `/`, `/<locale>`, `/work/<slug>`, `/print` and `/lab/trace` ship as static HTML instead of rendering on every request. The `<html>`/`<body>` shell, fonts, JSON-LD and anti-flash script moved into `app/[locale]/layout.tsx`.
+- Added a `global-error` boundary with its own shell for failures in the root layout itself.
+- Single self-contained 404 surface (`app/not-found.tsx`) with its own shell; it is English-only so it can stay static.
+
+### SEO & polish
+
+- `robots.txt` now `Disallow`s `/print` and `/lab` (bare and locale-prefixed), and those routes also send `X-Robots-Tag: noindex, nofollow` — honoured even when the HTML is never parsed.
+- Adaptive `theme-color` / `color-scheme` meta so mobile browser chrome tracks the light/dark palette instead of one hard-coded colour.
+
+### Fixes
+
+- Sitemap `lastModified` is pinned to the release date instead of `new Date()`, so it no longer tells crawlers every URL changed on every fetch.
+- Fold navigation (`j`/`k`/arrows) no longer fights the scroll listener: a short quiet window after a programmatic pin stops `openId` bouncing back.
+- Pointer spotlight writes are coalesced to one per animation frame.
+- Proof line emphasises every curated token, including the Italian "Barcellona" the old English-only check missed.
+
+### Testing & CI
+
+- Vitest now runs a `node` project for pure logic and a `jsdom` project for components and hooks. New behaviour tests replace the source-string assertions in `proxy` and `signalLayout`, and cover the previously untested `useFoldScroll`, `foldScroll`, `prefs`, `spotlight`, `github`, `sitemap`, `og`, `robots`, `next.config` headers, and every component (`Desk`, `SignalBoard`, `TraceTheater`, `Fold`, `Emphasize`, `ThemeSwitcher`, `LanguageSwitcher`, `PrintDesk`, error boundaries). 53 → 130+ tests.
+- A translation-drift test fails if a non-English locale's prose fields are left as the English copy.
+- `vitest-axe` fails the build on WCAG violations in the rendered desk.
+- Coverage (v8) is collected and gated in `npm run ci`.
+- Playwright smoke suite (`npm run test:e2e`) drives a local production build: home, locale switch, theme persistence, keyboard folds, print CV, `/api/health`, 404.
+- Lighthouse CI runs against that local build instead of `https://marcfors.com/`, three runs, asserting performance / accessibility / SEO scores plus CLS, LCP and TBT — so a regression fails the PR, not the deploy.
+- CI splits into `verify` and `e2e` jobs.
+
+### Hardening
+
+- Error observability, first-party only: `onRequestError` in `instrumentation.ts` logs structured server errors, and a `/api/errors` beacon (rate-limited, size-capped, validated) receives client-boundary reports from `error.tsx` and `global-error.tsx`. No third-party SDK, so the CSP stays intact.
+- `github.ts` sends an optional `Authorization: Bearer $GITHUB_TOKEN` to lift the unauthenticated shared-IP rate limit, and logs when the repo fetch fails instead of silently returning an empty list.
+- `@types/node` bumped to `^22` to match the Node version.
+
+Deferred (follow-up): splitting `copy.ts` into per-locale files, `@layer`-ing `globals.css`, and a hash/nonce CSP. A nonce CSP needs per-request rendering, which would undo the static generation above; Next's own inline bootstrap scripts have build-varying hashes, so `script-src` keeps `'unsafe-inline'` for now.
+
 ## 0.5.0 — 2026-09-02
 
 - System theme swatch follows the OS live; daylight/observatory stay explicit picks

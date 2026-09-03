@@ -18,6 +18,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SITE_NAME, SITE_REPO } from "@/lib/site";
 import { useFoldScroll } from "@/lib/useFoldScroll";
+import { createSpotlightMove } from "@/lib/spotlight";
 import { SignalBoard } from "@/components/SignalBoard";
 
 function projectLinks(project: Project, locale: Locale) {
@@ -45,16 +46,15 @@ function projectLinks(project: Project, locale: Locale) {
 }
 
 function ProofLine({ text }: { text: string }) {
+  // Every token in the proof line is a curated recruiter keyword, so all of them
+  // are emphasised. (The old English-only `token === "Barcelona"` check left the
+  // Italian "Barcellona" unbolded.)
   return (
     <p className="proof-line">
       {text.split(" · ").map((token, index) => (
         <span key={token}>
           {index > 0 ? " · " : null}
-          {RECRUITER_SKILLS.has(token) || token === "Barcelona" || token === "Dynatrace Dashboards" ? (
-            <strong className="hit">{token}</strong>
-          ) : (
-            token
-          )}
+          <strong className="hit">{token}</strong>
         </span>
       ))}
     </p>
@@ -95,16 +95,10 @@ export function Desk({
   );
 
   const { openId, open } = useFoldScroll(foldIds);
+  const spotlightMove = useMemo(() => createSpotlightMove(), []);
 
   return (
-    <div
-      className="desk"
-      onPointerMove={(event) => {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        event.currentTarget.style.setProperty("--spot-x", `${event.clientX}px`);
-        event.currentTarget.style.setProperty("--spot-y", `${event.clientY}px`);
-      }}
-    >
+    <div className="desk" onPointerMove={spotlightMove}>
       <div className="grid" />
       <div className="spot" />
       <a className="skip" href="#main">
