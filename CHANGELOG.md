@@ -10,6 +10,10 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 - Added a `global-error` boundary with its own shell for failures in the root layout itself.
 - Single self-contained 404 surface (`app/not-found.tsx`) with its own shell; it is English-only so it can stay static.
 
+### UI
+
+- One shared corner-radius scale (`--r-xs` … `--r-lg`, plus the pill). The language `<select>`, the section headers, cards, the contact panel, tooltips and the trace textarea were square-cornered (or `border-radius: 0`); they now round consistently. Each fold reads as a soft rounded panel — collapsed, just its heading bar; open, a bordered tinted panel with the header flush to the top.
+
 ### SEO & polish
 
 - `robots.txt` now `Disallow`s `/print` and `/lab` (bare and locale-prefixed), and those routes also send `X-Robots-Tag: noindex, nofollow` — honoured even when the HTML is never parsed.

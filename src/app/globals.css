@@ -18,6 +18,15 @@
   color-scheme: dark;
 }
 
+/* One radius scale for the whole desk: small controls → panels → floating bars. */
+:root {
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+}
+
 [data-theme="light"] {
   --ink: #f4efe4;
   --bg2: #ebe4d4;
@@ -118,6 +127,7 @@ a:hover { text-decoration: underline; }
   top: -48px;
   z-index: 20;
   padding: 8px 12px;
+  border-radius: var(--r-xs);
   background: var(--brass);
   color: var(--brass-ink);
 }
@@ -228,13 +238,16 @@ a:hover { text-decoration: underline; }
   background: var(--panel);
   color: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--r-xs);
   min-height: 44px;
   padding: 0 28px 0 10px;
   font: inherit;
   letter-spacing: inherit;
   text-transform: none;
   cursor: pointer;
+}
+.lang-select:hover {
+  border-color: var(--paper-dim);
 }
 .vh {
   position: absolute;
@@ -313,20 +326,40 @@ a:hover { text-decoration: underline; }
 
 .folds {
   display: grid;
-  gap: 0;
+  gap: 10px;
 }
 
+/* Each section is a soft rounded panel. Collapsed, it's just its heading bar;
+   open, the panel border and tint appear around the content. */
 .fold {
+  --fold-pad: clamp(16px, 3vw, 24px);
   margin: 0;
-  border-bottom: 1px solid var(--line);
+  border: 1px solid transparent;
+  border-radius: var(--r-lg);
+  padding: 0 var(--fold-pad);
+}
+
+.fold.open {
+  border-color: var(--line);
+  background: var(--panel);
+  padding-bottom: 8px;
 }
 
 .fold-heading {
   position: sticky;
-  top: 0;
+  top: 8px;
   z-index: 6;
-  margin: 0;
+  margin: 0 calc(-1 * var(--fold-pad));
+  padding: 0 var(--fold-pad);
   background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+
+/* Open: the heading is flush with the panel's rounded top, not a floating chip. */
+.fold.open .fold-heading {
+  border-color: transparent;
+  border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0;
 }
 
 .fold-head {
@@ -337,7 +370,7 @@ a:hover { text-decoration: underline; }
   gap: 16px;
   min-height: 56px;
   padding: 10px 0;
-  background: var(--ink);
+  background: transparent;
   border: 0;
   color: var(--paper-dim);
   font: inherit;
@@ -490,7 +523,7 @@ h1 {
   justify-content: center;
   min-height: 44px;
   padding: 0 18px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--brass);
   color: var(--brass-ink);
   font-size: 12px;
@@ -523,6 +556,7 @@ h1 {
 }
 .contact-panel {
   border: 1px solid var(--line);
+  border-radius: var(--r-md);
   background: var(--panel);
   padding: 28px 24px;
   display: grid;
@@ -635,7 +669,7 @@ h2 {
 .chip {
   border: 1px solid var(--line);
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -654,6 +688,7 @@ h2 {
 
 .card {
   border: 1px solid var(--line);
+  border-radius: var(--r-md);
   background: var(--panel);
   padding: 20px;
   display: grid;
@@ -741,6 +776,7 @@ h2 {
   width: min(280px, 70vw);
   padding: 12px 14px;
   border: 1px solid var(--line);
+  border-radius: var(--r-sm);
   background: var(--panel);
   color: var(--paper);
   font-size: 13px;
@@ -835,6 +871,7 @@ footer {
   min-height: 180px;
   padding: 14px;
   border: 1px solid var(--line);
+  border-radius: var(--r-sm);
   background: var(--panel);
   color: var(--paper);
   font: inherit;
