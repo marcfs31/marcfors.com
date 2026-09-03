@@ -13,7 +13,15 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 ### SEO & polish
 
 - `robots.txt` now `Disallow`s `/print` and `/lab` (bare and locale-prefixed), and those routes also send `X-Robots-Tag: noindex, nofollow` — honoured even when the HTML is never parsed.
+- Every sitemap entry carries the full hreflang alternate set (incl. `x-default`), not just the `<head>`.
 - Adaptive `theme-color` / `color-scheme` meta so mobile browser chrome tracks the light/dark palette instead of one hard-coded colour.
+- `/api/health` reports `releasedAt` so the signal board can date the running build.
+
+### Refactor
+
+- `src/data/copy.ts` (1133 lines) split into `src/data/copy/<locale>.ts` — one file per locale — with a thin barrel assembling the maps. Verified byte-identical output. Locale-independent `skills` / `contact` moved to `copy/shared.ts`.
+- The `/api/vitals` and `/api/errors` rate limiters are one shared `src/lib/rateLimit.ts`.
+- Playwright now also runs a `mobile` (Pixel 7) project covering the compact header's language `<select>`.
 
 ### Fixes
 

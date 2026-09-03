@@ -32,4 +32,16 @@ describe("sitemap", () => {
       }
     }
   });
+
+  it("carries the full hreflang alternate set on every entry", () => {
+    const entries = sitemap();
+    const home = entries.find((e) => e.url === SITE_URL)!;
+    const langs = home.alternates?.languages ?? {};
+    expect(Object.keys(langs).sort()).toEqual([...LOCALES, "x-default"].sort());
+    expect(langs["x-default"]).toBe(SITE_URL);
+    expect(langs.de).toBe(`${SITE_URL}/de`);
+
+    const study = entries.find((e) => e.url === `${SITE_URL}/de/work/${CASE_STUDIES[0].slug}`)!;
+    expect(study.alternates?.languages?.es).toBe(`${SITE_URL}/es/work/${CASE_STUDIES[0].slug}`);
+  });
 });

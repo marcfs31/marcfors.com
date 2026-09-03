@@ -26,7 +26,7 @@ Public personal portfolio for Marc Fors, hosted at **https://marcfors.com**. Obs
 - No Tailwind, no shadcn, no hardcoded `bg-emerald-*`.
 - Locale is in the URL (`/` English, `/es`, `/de`, …) with `hreflang`. Cookie still remembers the last pick.
 - `prefers-reduced-motion` hides the pointer spotlight.
-- Copy lives in `src/data/copy.ts`. Featured work in `src/data/projects.ts`. Domain/email constants in `src/lib/site.ts`.
+- Copy lives in `src/data/copy/<locale>.ts` (one file per locale: `ui`, `experience`, `careerBreak`, `education`, `languages`); `src/data/copy.ts` is the barrel that assembles the `Record<Locale, …>` maps, plus locale-independent `skills` / `contact` in `src/data/copy/shared.ts`. Featured work in `src/data/projects.ts`. Domain/email constants in `src/lib/site.ts`.
 
 ## Versioning & git
 
