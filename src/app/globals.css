@@ -912,6 +912,80 @@ footer {
 .case section {
   margin: 28px 0;
 }
+
+/* ---- Wordkeep Atlas embed ---- */
+.atlas-block {
+  margin: 44px 0 8px;
+  max-width: 920px;
+}
+.atlas-block .lede {
+  max-width: 62ch;
+}
+.atlas {
+  margin: 18px 0 0;
+  display: grid;
+  gap: 14px;
+}
+.atlas-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(300px, 52vw, 440px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 90% at 82% 0%, var(--glow), transparent 60%),
+    var(--panel);
+  overflow: hidden;
+}
+.atlas-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+.atlas-legend {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.atlas-count {
+  color: var(--paper-dim);
+  font-variant-numeric: tabular-nums;
+}
+.atlas-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 16px;
+}
+.atlas-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.atlas-key i {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  border-top: 2px solid var(--muted);
+}
+.atlas-key[data-rel="syn"] i { border-top-color: var(--signal); }
+.atlas-key[data-rel="ant"] i { border-top-style: dashed; border-top-color: var(--danger); }
+.atlas-key[data-rel="tr"] i { border-top-color: var(--brass); }
+.atlas-key[data-rel="rel"] i { border-top-style: dotted; border-top-color: var(--muted); }
+.atlas-lang em {
+  font-style: normal;
+  color: var(--paper-dim);
+  margin-left: 3px;
+}
+.atlas-links {
+  margin-top: 2px;
+}
 .print-cv {
   display: grid;
   gap: 8px;

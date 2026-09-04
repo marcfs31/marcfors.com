@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
+import { WordAtlas } from "@/components/WordAtlas";
 import { CASE_STUDIES, caseStudyBySlug } from "@/data/caseStudies";
 import { copy } from "@/data/copy";
+import { ATLAS_COPY } from "@/data/wordAtlas";
 import { isLocale, languageAlternates, LOCALES, localeUrl, withLocale } from "@/lib/locale";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -85,6 +87,13 @@ export default async function CaseStudyPage({
           ) : null}
         </div>
       </main>
+      {slug === "wordkeep" ? (
+        <section className="atlas-block" aria-label={ATLAS_COPY[locale].heading}>
+          <h2>{ATLAS_COPY[locale].heading}</h2>
+          <p className="lede">{ATLAS_COPY[locale].lede}</p>
+          <WordAtlas locale={locale} />
+        </section>
+      ) : null}
     </div>
   );
 }

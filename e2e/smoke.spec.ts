@@ -36,6 +36,17 @@ test("print route renders the CV", async ({ page }) => {
   await expect(page.getByText(/T-Systems/)).toBeVisible();
 });
 
+test("Wordkeep case study embeds the atlas and links out to the live project", async ({ page }) => {
+  await page.goto("/work/wordkeep");
+  await expect(page.getByRole("heading", { level: 1, name: "Wordkeep" })).toBeVisible();
+  await expect(page.locator(".atlas-canvas")).toBeVisible();
+  await expect(page.getByText("56 words · 90 links · 4 languages")).toBeVisible();
+  const openAtlas = page.getByRole("link", { name: "Open the 3D atlas" });
+  const visit = page.getByRole("link", { name: "Visit Wordkeep" });
+  await expect(openAtlas).toHaveAttribute("href", "https://wordkeep-zeta.vercel.app/graph");
+  await expect(visit).toHaveAttribute("href", "https://wordkeep-zeta.vercel.app");
+});
+
 test("health endpoint is public JSON", async ({ request }) => {
   const res = await request.get("/api/health");
   expect(res.ok()).toBeTruthy();

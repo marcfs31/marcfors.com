@@ -2,6 +2,11 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.7.0 — 2026-09-04
+
+- **Wordkeep** joins featured work with a `/work/wordkeep` case study. The page embeds **The Atlas** — a frozen snapshot of Wordkeep's semantic graph (56 words, 90 links, four languages), drawn on a canvas with a tiny self-contained force layout, no graph library. Hover a word to trace its synonym / antonym / translation / related links; the legend and colours come from the desk's own tokens. Two links out: the live 3D atlas and the Wordkeep app.
+- `src/data/wordAtlas.ts` holds the snapshot and its localized micro-copy; `WordAtlas.tsx` is the client component. New unit tests for both, an axe check on the render, and an e2e test covering the embed and its outbound links.
+
 ## 0.6.0 — 2026-09-02
 
 ### Rendering

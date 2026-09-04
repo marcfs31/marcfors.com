@@ -29,6 +29,22 @@ export const featured: Project[] = [
     spotlight: true,
   },
   {
+    name: "Wordkeep",
+    blurb: {
+      en: "Vocabulary keeper with a spaced review queue and a 3D atlas that wires saved words together by synonym, antonym, translation and sense across four languages.",
+      es: "Guarda-vocabulario con cola de repaso espaciado y un atlas 3D que enlaza las palabras guardadas por sinónimo, antónimo, traducción y sentido en cuatro idiomas.",
+      ca: "Guarda-vocabulari amb cua de repàs espaiat i un atles 3D que enllaça les paraules desades per sinònim, antònim, traducció i sentit en quatre llengües.",
+      it: "Raccoglitore di vocaboli con coda di ripasso spaziato e un atlante 3D che collega le parole salvate per sinonimo, contrario, traduzione e senso in quattro lingue.",
+      pt: "Guarda-vocabulário com fila de revisão espaçada e um atlas 3D que liga as palavras guardadas por sinónimo, antónimo, tradução e sentido em quatro línguas.",
+      de: "Vokabelspeicher mit Spaced-Repetition-Warteschlange und einem 3D-Atlas, der gespeicherte Wörter über Synonym, Gegenteil, Übersetzung und Bedeutung in vier Sprachen verbindet.",
+    },
+    stack: ["React", "Vite", "TypeScript"],
+    live: "https://wordkeep-zeta.vercel.app",
+    caseStudy: "wordkeep",
+    private: true,
+    spotlight: true,
+  },
+  {
     name: "Habit Breaker",
     blurb: {
       en: "Weekly habit and schedule planner. Day templates, busy intervals, push reminders, Spanish/English, a public marketplace of routines.",
