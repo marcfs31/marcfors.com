@@ -77,8 +77,12 @@ describe("Desk", () => {
     expect(bolded).toContain("Barcellona");
   });
 
-  it("has no axe violations", async () => {
-    const { container } = renderDesk();
-    expect(await axe(container)).toHaveNoViolations();
-  });
+  it(
+    "has no axe violations",
+    async () => {
+      const { container } = renderDesk();
+      expect(await axe(container)).toHaveNoViolations();
+    },
+    15000, // a full-desk axe scan under coverage instrumentation can outrun the 5s default
+  );
 });

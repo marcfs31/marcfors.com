@@ -941,7 +941,38 @@ footer {
   display: block;
   width: 100%;
   height: 100%;
-  touch-action: pan-y;
+  /* Nodes are draggable in any direction, so the canvas must own every touch
+     gesture inside it — `pan-y` would hand a vertical drag to page scroll
+     before a pointer handler ever saw it. */
+  touch-action: none;
+}
+.atlas-readout {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  backdrop-filter: blur(6px);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--paper-dim);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  pointer-events: none;
+}
+.atlas-readout.on {
+  opacity: 1;
+  transform: none;
+}
+.atlas-readout strong {
+  color: var(--paper);
+  font-family: var(--serif);
+  font-weight: 600;
+  margin-right: 2px;
 }
 .atlas-legend {
   margin: 0;
@@ -1031,5 +1062,5 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .spot { display: none; }
   .tip { transform: none; }
-
+  .atlas-readout { transition: none; transform: none; }
 }

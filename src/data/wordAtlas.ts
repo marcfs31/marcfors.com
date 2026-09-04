@@ -116,7 +116,7 @@ type AtlasCopy = {
 export const ATLAS_COPY: Record<Locale, AtlasCopy> = {
   en: {
     heading: "The Atlas",
-    lede: "A live slice of my other project, Wordkeep: saved vocabulary wired together by sense. Hover a word to trace its links; open the full 3D map on Wordkeep.",
+    lede: "A live slice of my other project, Wordkeep: saved vocabulary wired together by sense. Drag a word to move it, tap or click one to read its links; open the full 3D map on Wordkeep.",
     open: "Open the 3D atlas",
     visit: "Visit Wordkeep",
     hint: "56 words · 90 links · 4 languages",
@@ -124,7 +124,7 @@ export const ATLAS_COPY: Record<Locale, AtlasCopy> = {
   },
   es: {
     heading: "El Atlas",
-    lede: "Un trozo en vivo de mi otro proyecto, Wordkeep: vocabulario guardado conectado por significado. Pasa el ratón por una palabra para ver sus enlaces; abre el mapa 3D completo en Wordkeep.",
+    lede: "Un trozo en vivo de mi otro proyecto, Wordkeep: vocabulario guardado conectado por significado. Arrastra una palabra para moverla, tócala o haz clic para ver sus enlaces; abre el mapa 3D completo en Wordkeep.",
     open: "Abrir el atlas 3D",
     visit: "Ir a Wordkeep",
     hint: "56 palabras · 90 enlaces · 4 idiomas",
@@ -132,7 +132,7 @@ export const ATLAS_COPY: Record<Locale, AtlasCopy> = {
   },
   ca: {
     heading: "L'Atles",
-    lede: "Un tall en directe del meu altre projecte, Wordkeep: vocabulari desat connectat pel sentit. Passa el ratolí per una paraula per veure'n els enllaços; obre el mapa 3D complet a Wordkeep.",
+    lede: "Un tall en directe del meu altre projecte, Wordkeep: vocabulari desat connectat pel sentit. Arrossega una paraula per moure-la, toca-la o clica-hi per veure'n els enllaços; obre el mapa 3D complet a Wordkeep.",
     open: "Obre l'atles 3D",
     visit: "Vés a Wordkeep",
     hint: "56 paraules · 90 enllaços · 4 llengües",
@@ -140,7 +140,7 @@ export const ATLAS_COPY: Record<Locale, AtlasCopy> = {
   },
   it: {
     heading: "L'Atlante",
-    lede: "Una fetta live del mio altro progetto, Wordkeep: vocaboli salvati collegati per significato. Passa il mouse su una parola per seguirne i legami; apri la mappa 3D completa su Wordkeep.",
+    lede: "Una fetta live del mio altro progetto, Wordkeep: vocaboli salvati collegati per significato. Trascina una parola per spostarla, toccala o cliccala per leggerne i legami; apri la mappa 3D completa su Wordkeep.",
     open: "Apri l'atlante 3D",
     visit: "Vai a Wordkeep",
     hint: "56 parole · 90 collegamenti · 4 lingue",
@@ -148,7 +148,7 @@ export const ATLAS_COPY: Record<Locale, AtlasCopy> = {
   },
   pt: {
     heading: "O Atlas",
-    lede: "Uma fatia ao vivo do meu outro projeto, Wordkeep: vocabulário guardado ligado pelo sentido. Passa o rato numa palavra para ver as ligações; abre o mapa 3D completo no Wordkeep.",
+    lede: "Uma fatia ao vivo do meu outro projeto, Wordkeep: vocabulário guardado ligado pelo sentido. Arrasta uma palavra para a mover, toca-lhe ou clica para ver as ligações; abre o mapa 3D completo no Wordkeep.",
     open: "Abrir o atlas 3D",
     visit: "Ir para Wordkeep",
     hint: "56 palavras · 90 ligações · 4 línguas",
@@ -156,7 +156,7 @@ export const ATLAS_COPY: Record<Locale, AtlasCopy> = {
   },
   de: {
     heading: "Der Atlas",
-    lede: "Ein Live-Ausschnitt aus meinem anderen Projekt Wordkeep: gespeicherte Vokabeln, über Bedeutung verknüpft. Fahre über ein Wort, um seine Kanten zu sehen; die volle 3D-Karte gibt es auf Wordkeep.",
+    lede: "Ein Live-Ausschnitt aus meinem anderen Projekt Wordkeep: gespeicherte Vokabeln, über Bedeutung verknüpft. Ziehe ein Wort, um es zu verschieben, tippe oder klicke, um seine Kanten zu sehen; die volle 3D-Karte gibt es auf Wordkeep.",
     open: "3D-Atlas öffnen",
     visit: "Zu Wordkeep",
     hint: "56 Wörter · 90 Kanten · 4 Sprachen",

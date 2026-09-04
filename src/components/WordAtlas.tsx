@@ -28,6 +28,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
   const t = ATLAS_COPY[locale];
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const readoutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const wrapNode = wrapRef.current;
@@ -47,10 +48,11 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     const N = WORD_ATLAS.nodes.length;
     const edges = WORD_ATLAS.edges;
 
-    const adj: number[][] = WORD_ATLAS.nodes.map(() => []);
-    edges.forEach(([a, b]) => {
-      adj[a].push(b);
-      adj[b].push(a);
+    type Edge = { other: number; rel: AtlasRelation };
+    const adj: Edge[][] = WORD_ATLAS.nodes.map(() => []);
+    edges.forEach(([a, b, rel]) => {
+      adj[a].push({ other: b, rel });
+      adj[b].push({ other: a, rel });
     });
 
     type P = { x: number; y: number; vx: number; vy: number };
@@ -62,7 +64,10 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     let W = 1;
     let H = 1;
     let raf = 0;
-    let focus = -1;
+    let hoverIdx = -1; // desktop mouse preview, cleared on pointerleave
+    let pinIdx = -1; // click/tap selection, persists until cleared — this is what "opens" a word
+    let dragIdx = -1;
+    const focus = () => (pinIdx >= 0 ? pinIdx : hoverIdx);
 
     const readColors = () => {
       const c = getComputedStyle(document.documentElement);
@@ -87,17 +92,18 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     const py = (p: P) => p.y * H;
 
     function draw() {
+      const f = focus();
       ctx.clearRect(0, 0, W, H);
       const near = new Set<number>();
-      if (focus >= 0) {
-        near.add(focus);
-        adj[focus].forEach((n) => near.add(n));
+      if (f >= 0) {
+        near.add(f);
+        adj[f].forEach((e) => near.add(e.other));
       }
 
       ctx.lineCap = "round";
       edges.forEach(([a, b, r]) => {
-        const lit = focus >= 0 && (a === focus || b === focus);
-        const faded = focus >= 0 && !lit;
+        const lit = f >= 0 && (a === f || b === f);
+        const faded = f >= 0 && !lit;
         ctx.globalAlpha = faded ? 0.06 : 0.55;
         ctx.strokeStyle = relColor(r);
         ctx.lineWidth = lit ? 1.8 : 1;
@@ -112,15 +118,20 @@ export function WordAtlas({ locale }: { locale: Locale }) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       pts.forEach((p, i) => {
-        const isFocus = i === focus;
-        const faded = focus >= 0 && !near.has(i);
-        const r = isFocus ? 5.5 : 3.2;
+        const isFocus = i === f;
+        const faded = f >= 0 && !near.has(i);
+        const r = isFocus ? 6.5 : 3.2;
         ctx.globalAlpha = faded ? 0.18 : 1;
         ctx.beginPath();
         ctx.arc(px(p), py(p), r, 0, Math.PI * 2);
         ctx.fillStyle = isFocus ? COL.focus : COL.node;
         ctx.fill();
-        if (near.has(i) || focus < 0) {
+        if (i === pinIdx) {
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = COL.tr;
+          ctx.stroke();
+        }
+        if (near.has(i) || f < 0) {
           ctx.globalAlpha = faded ? 0.2 : isFocus ? 1 : 0.75;
           ctx.fillStyle = isFocus ? COL.label : COL.node;
           ctx.font = `${isFocus ? "600 13px" : "500 11px"} ${COL.serif}`;
@@ -166,12 +177,20 @@ export function WordAtlas({ locale }: { locale: Locale }) {
       });
       for (let i = 0; i < N; i++) {
         const a = pts[i];
+        if (i === dragIdx) {
+          // Position is driven by the pointer directly (see `move`); other nodes
+          // still feel it through the repulsion/spring loops above.
+          a.vx = 0;
+          a.vy = 0;
+          continue;
+        }
         // Extra headroom at the top: labels draw above their node, so a node
         // clamped too close to y=0 gets its own label clipped by the canvas edge.
         a.x = Math.min(0.97, Math.max(0.04, a.x + a.vx));
         a.y = Math.min(0.94, Math.max(0.13, a.y + a.vy));
         moved += Math.abs(a.vx) + Math.abs(a.vy);
       }
+      if (dragIdx >= 0) moved = Math.max(moved, 1); // keep the sim awake while dragging
       return moved;
     }
 
@@ -214,12 +233,12 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     mq.addEventListener("change", onThemeChange);
 
-    const hit = (ev: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const mx = ev.clientX - rect.left;
-      const my = ev.clientY - rect.top;
+    // Hit radius is generous — 20px reaches comfortably past a fingertip, not
+    // just a mouse cursor, since this has to work by touch as well as hover.
+    const HIT = 20 * 20;
+    function nodeAt(mx: number, my: number): number {
       let best = -1;
-      let bd = 16 * 16;
+      let bd = HIT;
       for (let i = 0; i < N; i++) {
         const dx = px(pts[i]) - mx;
         const dy = py(pts[i]) - my;
@@ -229,29 +248,105 @@ export function WordAtlas({ locale }: { locale: Locale }) {
           best = i;
         }
       }
-      if (best !== focus) {
-        focus = best;
-        canvas.style.cursor = best >= 0 ? "pointer" : "default";
+      return best;
+    }
+    function localXY(ev: PointerEvent) {
+      const rect = canvas.getBoundingClientRect();
+      return { mx: ev.clientX - rect.left, my: ev.clientY - rect.top };
+    }
+
+    const readout = readoutRef.current;
+    function updateReadout() {
+      if (!readout) return;
+      if (pinIdx < 0) {
+        readout.classList.remove("on");
+        readout.replaceChildren();
+        return;
+      }
+      const word = WORD_ATLAS.nodes[pinIdx];
+      const head = document.createElement("strong");
+      head.textContent = word.label;
+      const rest = document.createElement("span");
+      rest.textContent =
+        " — " +
+        adj[pinIdx]
+          .map((e) => `${WORD_ATLAS.nodes[e.other].label} (${t.rel[e.rel]})`)
+          .join(", ");
+      readout.replaceChildren(head, rest);
+      readout.classList.add("on");
+    }
+
+    const onDown = (ev: PointerEvent) => {
+      const { mx, my } = localXY(ev);
+      const i = nodeAt(mx, my);
+      pinIdx = i;
+      updateReadout();
+      if (i >= 0) {
+        dragIdx = i;
+        try {
+          canvas.setPointerCapture(ev.pointerId);
+        } catch {
+          /* ignore */
+        }
+        ev.preventDefault();
+        if (!raf) raf = requestAnimationFrame(loop);
+      }
+      canvas.style.cursor = i >= 0 ? "pointer" : "default";
+      if (!raf) draw();
+    };
+    const onMove = (ev: PointerEvent) => {
+      const { mx, my } = localXY(ev);
+      if (dragIdx >= 0) {
+        pts[dragIdx].x = Math.min(0.98, Math.max(0.02, mx / W));
+        pts[dragIdx].y = Math.min(0.97, Math.max(0.03, my / H));
+        ev.preventDefault();
+        return;
+      }
+      const i = nodeAt(mx, my);
+      if (i !== hoverIdx) {
+        hoverIdx = i;
+        canvas.style.cursor = i >= 0 ? "pointer" : "default";
         if (!raf) draw();
       }
     };
-    const clear = () => {
-      if (focus !== -1) {
-        focus = -1;
+    const endDrag = (ev: PointerEvent) => {
+      if (dragIdx < 0) return;
+      dragIdx = -1;
+      try {
+        canvas.releasePointerCapture(ev.pointerId);
+      } catch {
+        /* ignore */
+      }
+      if (!raf) draw();
+    };
+    const onLeave = () => {
+      if (hoverIdx !== -1) {
+        hoverIdx = -1;
         if (!raf) draw();
       }
     };
-    canvas.addEventListener("pointermove", hit);
-    canvas.addEventListener("pointerleave", clear);
+
+    canvas.addEventListener("pointerdown", onDown);
+    canvas.addEventListener("pointermove", onMove);
+    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointercancel", endDrag);
+    canvas.addEventListener("pointerleave", onLeave);
 
     return () => {
       if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
       mo.disconnect();
       mq.removeEventListener("change", onThemeChange);
-      canvas.removeEventListener("pointermove", hit);
-      canvas.removeEventListener("pointerleave", clear);
+      canvas.removeEventListener("pointerdown", onDown);
+      canvas.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerup", endDrag);
+      canvas.removeEventListener("pointercancel", endDrag);
+      canvas.removeEventListener("pointerleave", onLeave);
     };
+    // Runs once: this sets up the canvas simulation for the component's whole
+    // lifetime. `t` only changes if `locale` changes, which remounts the page
+    // (a different route under [locale]), so it can't go stale here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -263,6 +358,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
           role="img"
           aria-label={`Wordkeep Atlas — ${ATLAS_STATS.words} words in ${ATLAS_STATS.languages} languages, ${ATLAS_STATS.links} links`}
         />
+        <div className="atlas-readout" ref={readoutRef} aria-live="polite" />
       </div>
       <figcaption className="atlas-legend">
         <span className="atlas-count">{t.hint}</span>

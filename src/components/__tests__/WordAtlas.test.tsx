@@ -45,8 +45,12 @@ describe("WordAtlas", () => {
     }
   });
 
-  it("has no axe violations", async () => {
-    const { container } = render(<WordAtlas locale="en" />);
-    expect(await axe(container)).toHaveNoViolations();
-  });
+  it(
+    "has no axe violations",
+    async () => {
+      const { container } = render(<WordAtlas locale="en" />);
+      expect(await axe(container)).toHaveNoViolations();
+    },
+    15000, // an axe scan under coverage instrumentation can outrun the 5s default
+  );
 });

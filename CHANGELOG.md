@@ -4,8 +4,9 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 
 ## 0.7.0 — 2026-09-04
 
-- **Wordkeep** joins featured work with a `/work/wordkeep` case study. The page embeds **The Atlas** — a frozen snapshot of Wordkeep's semantic graph (56 words, 90 links, four languages), drawn on a canvas with a tiny self-contained force layout, no graph library. Hover a word to trace its synonym / antonym / translation / related links; the legend and colours come from the desk's own tokens. Two links out: the live 3D atlas and the Wordkeep app.
-- `src/data/wordAtlas.ts` holds the snapshot and its localized micro-copy; `WordAtlas.tsx` is the client component. New unit tests for both, an axe check on the render, and an e2e test covering the embed and its outbound links.
+- **Wordkeep** joins featured work with a `/work/wordkeep` case study. The page embeds **The Atlas** — a frozen snapshot of Wordkeep's semantic graph (56 words, 90 links, four languages), drawn on a canvas with a tiny self-contained force layout, no graph library. Drag a word to move it, tap or click one to read its synonym / antonym / translation / related links in a small inline readout; the legend and colours come from the desk's own tokens. Two links out: the live 3D atlas and the Wordkeep app.
+- Fix: the embed shipped hover-only, so it did nothing on a touchscreen — worse, `touch-action: pan-y` handed a finger-drag to page scroll before the canvas's own pointer handlers ever saw it. Click/tap now drives a persistent selection (works identically for mouse and touch) and nodes are properly draggable; `touch-action: none` lets the canvas claim its own gestures.
+- `src/data/wordAtlas.ts` holds the snapshot and its localized micro-copy; `WordAtlas.tsx` is the client component. Unit tests for both, an axe check on the render, and e2e coverage (`e2e/atlasHit.ts`) driving a real mouse click and a real touchscreen tap through the actual selection.
 
 ## 0.6.0 — 2026-09-02
 
