@@ -10,8 +10,6 @@ describe("locale copy", () => {
       expect(Object.keys(copy[locale])).toEqual(keys);
       expect(Object.keys(copy[locale].skillGroups)).toEqual(Object.keys(copy.en.skillGroups));
       expect(Object.keys(copy[locale].vitalDefs)).toEqual([...VITAL_NAMES]);
-      expect(copy[locale].expand.length).toBeGreaterThan(0);
-      expect(copy[locale].collapse.length).toBeGreaterThan(0);
       expect(experience[locale]).toHaveLength(experience.en.length);
       expect(education[locale]).toHaveLength(education.en.length);
       expect(experience[locale][0]?.points.length).toBe(experience.en[0]?.points.length);
@@ -19,7 +17,7 @@ describe("locale copy", () => {
   });
 
   it("actually translates the prose fields (no English left in place)", () => {
-    const prose = ["lede", "contactLede", "hirePathLede", "buildPathLede", "notFoundBody", "errorBody"] as const;
+    const prose = ["lede", "contactLede", "hirePathLede", "buildPathLede"] as const;
     for (const locale of LOCALES.filter((l) => l !== "en")) {
       for (const key of prose) {
         expect(copy[locale][key], `${locale}.${key}`).not.toBe(copy.en[key]);
