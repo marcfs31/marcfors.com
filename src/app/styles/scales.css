@@ -1,0 +1,50 @@
+/* Hand-written token scales — the non-colour half of the design system.
+   Colour tokens are generated into tokens.css from src/lib/themePalettes.ts. */
+@layer tokens {
+  :root {
+    /* Corner radius: tiny badges → small controls → panels → bars → pills. */
+    --r-2xs: 4px;
+    --r-xs: 6px;
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 18px;
+    --r-pill: 999px;
+
+    /* Spacing, 4px base. Used for gap / margin / padding rhythm. */
+    --s-1: 4px;
+    --s-2: 8px;
+    --s-3: 12px;
+    --s-4: 16px;
+    --s-5: 20px;
+    --s-6: 24px;
+    --s-8: 32px;
+    --s-10: 40px;
+    --s-12: 48px;
+    --s-16: 64px;
+    --s-20: 80px;
+
+    /* Type scale (rem-ish px). Fluid display sizes stay inline with clamp(). */
+    --t-xs: 11px;
+    --t-sm: 12px;
+    --t-base: 15px;
+    --t-md: 16px;
+    --t-lg: 19px;
+    --t-xl: 22px;
+    --t-2xl: 26px;
+    --t-3xl: 36px;
+
+    --lh-tight: 1.15;
+    --lh-snug: 1.35;
+    --lh-normal: 1.55;
+    --lh-relaxed: 1.7;
+
+    /* Layout */
+    --container: 1100px;
+
+    /* Stacking order — keep every explicit z-index on this ladder. */
+    --z-base: 1;
+    --z-heading: 6;
+    --z-tip: 8;
+    --z-skip: 20;
+  }
+}

@@ -5,7 +5,12 @@ import { AA_NORMAL, contrastRatio } from "@/lib/contrast";
 import { PALETTE_THEMES, resolveTheme, THEME_CHOICES } from "@/lib/theme";
 import { cssVars, THEME_PALETTES } from "@/lib/themePalettes";
 
-const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
+// Theme colour blocks live in the generated tokens.css; the system swatch and
+// everything else stays in globals.css.
+const css =
+  readFileSync(path.resolve(__dirname, "../../app/styles/tokens.css"), "utf8") +
+  "\n" +
+  readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
 
 describe("themes", () => {
   it("ships a CSS block for every palette token", () => {

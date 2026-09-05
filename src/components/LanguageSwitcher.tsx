@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Flag } from "@/components/Flag";
 import { copy } from "@/data/copy";
 import type { Locale } from "@/lib/locale";
 import { isLocale, LOCALE_CODES, LOCALE_LABELS, LOCALES, stripLocale, withLocale } from "@/lib/locale";
@@ -25,7 +26,8 @@ export function LanguageSwitcher({ locale, pathname }: { locale: Locale; pathnam
             aria-current={locale === code ? "page" : undefined}
             onClick={() => writeLocale(code)}
           >
-            {LOCALE_CODES[code]}
+            <Flag locale={code} className="flag" />
+            <span className="lang-code">{LOCALE_CODES[code]}</span>
           </Link>
         ))}
       </div>
