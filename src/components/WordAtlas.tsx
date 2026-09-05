@@ -3,6 +3,14 @@
 import { useEffect, useRef } from "react";
 import type { Locale } from "@/lib/locale";
 import {
+  buildAdjacency,
+  nodeAt,
+  seedRing,
+  settle,
+  stepForces,
+  type SimPoint,
+} from "@/lib/atlasSim";
+import {
   ATLAS_COPY,
   ATLAS_STATS,
   WORD_ATLAS,
@@ -37,7 +45,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     const context = canvasNode.getContext("2d");
     if (!context) return; // no 2d context (e.g. jsdom) — the legend + links still stand alone
 
-    // Re-bind with explicit non-null types: the nested draw/step/resize
+    // Re-bind with explicit non-null types: the nested draw/loop/resize
     // functions below are closures, and TS does not carry the narrowing from
     // the guards above into function declarations that run later.
     const wrap: HTMLDivElement = wrapNode;
@@ -48,18 +56,9 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     const N = WORD_ATLAS.nodes.length;
     const edges = WORD_ATLAS.edges;
 
-    type Edge = { other: number; rel: AtlasRelation };
-    const adj: Edge[][] = WORD_ATLAS.nodes.map(() => []);
-    edges.forEach(([a, b, rel]) => {
-      adj[a].push({ other: b, rel });
-      adj[b].push({ other: a, rel });
-    });
-
-    type P = { x: number; y: number; vx: number; vy: number };
-    const pts: P[] = WORD_ATLAS.nodes.map((_, i) => {
-      const a = (i / N) * Math.PI * 2;
-      return { x: 0.5 + Math.cos(a) * 0.36, y: 0.5 + Math.sin(a) * 0.36, vx: 0, vy: 0 };
-    });
+    // The physics + hit-testing live in src/lib/atlasSim.ts (pure, unit-tested).
+    const adj = buildAdjacency(N, edges);
+    const pts: SimPoint[] = seedRing(N);
 
     let W = 1;
     let H = 1;
@@ -88,8 +87,8 @@ export function WordAtlas({ locale }: { locale: Locale }) {
       r === "syn" ? COL.syn : r === "ant" ? COL.ant : r === "tr" ? COL.tr : COL.rel;
     const relDash = (r: AtlasRelation) => (r === "ant" ? [5, 4] : r === "rel" ? [1.5, 4] : []);
 
-    const px = (p: P) => p.x * W;
-    const py = (p: P) => p.y * H;
+    const px = (p: SimPoint) => p.x * W;
+    const py = (p: SimPoint) => p.y * H;
 
     function draw() {
       const f = focus();
@@ -141,61 +140,8 @@ export function WordAtlas({ locale }: { locale: Locale }) {
       ctx.globalAlpha = 1;
     }
 
-    function step() {
-      let moved = 0;
-      for (let i = 0; i < N; i++) {
-        const a = pts[i];
-        let fx = 0;
-        let fy = 0;
-        for (let j = 0; j < N; j++) {
-          if (i === j) continue;
-          const b = pts[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d2 = dx * dx + dy * dy || 0.0001;
-          const rep = 0.0012 / d2;
-          fx += dx * rep;
-          fy += dy * rep;
-        }
-        fx += (0.5 - a.x) * 0.02;
-        fy += (0.5 - a.y) * 0.02;
-        a.vx = (a.vx + fx) * 0.82;
-        a.vy = (a.vy + fy) * 0.82;
-      }
-      edges.forEach(([ai, bi, r]) => {
-        const a = pts[ai];
-        const b = pts[bi];
-        const dx = b.x - a.x;
-        const dy = b.y - a.y;
-        const d = Math.hypot(dx, dy) || 0.0001;
-        const rest = r === "tr" ? 0.26 : r === "syn" ? 0.12 : r === "rel" ? 0.2 : 0.17;
-        const k = ((d - rest) / d) * (r === "syn" ? 0.06 : 0.035);
-        a.vx += dx * k;
-        a.vy += dy * k;
-        b.vx -= dx * k;
-        b.vy -= dy * k;
-      });
-      for (let i = 0; i < N; i++) {
-        const a = pts[i];
-        if (i === dragIdx) {
-          // Position is driven by the pointer directly (see `move`); other nodes
-          // still feel it through the repulsion/spring loops above.
-          a.vx = 0;
-          a.vy = 0;
-          continue;
-        }
-        // Extra headroom at the top: labels draw above their node, so a node
-        // clamped too close to y=0 gets its own label clipped by the canvas edge.
-        a.x = Math.min(0.97, Math.max(0.04, a.x + a.vx));
-        a.y = Math.min(0.94, Math.max(0.13, a.y + a.vy));
-        moved += Math.abs(a.vx) + Math.abs(a.vy);
-      }
-      if (dragIdx >= 0) moved = Math.max(moved, 1); // keep the sim awake while dragging
-      return moved;
-    }
-
     function loop() {
-      const moved = step();
+      const moved = stepForces(pts, edges, { dragIdx });
       draw();
       if (moved > 0.002) raf = requestAnimationFrame(loop);
       else raf = 0;
@@ -215,7 +161,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
 
     resize();
     if (reduce) {
-      for (let i = 0; i < 260; i++) step();
+      settle(pts, edges);
       draw();
     } else {
       loop();
@@ -233,23 +179,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     mq.addEventListener("change", onThemeChange);
 
-    // Hit radius is generous — 20px reaches comfortably past a fingertip, not
-    // just a mouse cursor, since this has to work by touch as well as hover.
-    const HIT = 20 * 20;
-    function nodeAt(mx: number, my: number): number {
-      let best = -1;
-      let bd = HIT;
-      for (let i = 0; i < N; i++) {
-        const dx = px(pts[i]) - mx;
-        const dy = py(pts[i]) - my;
-        const d = dx * dx + dy * dy;
-        if (d < bd) {
-          bd = d;
-          best = i;
-        }
-      }
-      return best;
-    }
+    const hit = (mx: number, my: number) => nodeAt(mx, my, pts, W, H);
     function localXY(ev: PointerEvent) {
       const rect = canvas.getBoundingClientRect();
       return { mx: ev.clientX - rect.left, my: ev.clientY - rect.top };
@@ -278,7 +208,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
 
     const onDown = (ev: PointerEvent) => {
       const { mx, my } = localXY(ev);
-      const i = nodeAt(mx, my);
+      const i = hit(mx, my);
       pinIdx = i;
       updateReadout();
       if (i >= 0) {
@@ -302,7 +232,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
         ev.preventDefault();
         return;
       }
-      const i = nodeAt(mx, my);
+      const i = hit(mx, my);
       if (i !== hoverIdx) {
         hoverIdx = i;
         canvas.style.cursor = i >= 0 ? "pointer" : "default";
