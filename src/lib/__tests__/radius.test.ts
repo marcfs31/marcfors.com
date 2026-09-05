@@ -28,10 +28,9 @@ describe("radius scale", () => {
     }
   });
 
-  it("rounds the language select and the section headers", () => {
+  it("rounds the language select, cards and the switcher badge through tokens", () => {
     expect(css).toMatch(/\.lang-select\s*\{[^}]*border-radius:\s*var\(--r-xs\)/);
-    expect(css).toMatch(/\.fold-heading\s*\{[^}]*border-radius:\s*var\(--r-md\)/);
-    expect(css).toMatch(/\.fold\s*\{[^}]*border-radius:\s*var\(--r-lg\)/);
     expect(css).toMatch(/\.card\s*\{[^}]*border-radius:\s*var\(--r-md\)/);
+    expect(css).toMatch(/\.langs \.lang-code\s*\{[^}]*border-radius:\s*var\(--r-2xs\)/);
   });
 });

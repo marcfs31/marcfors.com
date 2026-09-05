@@ -51,7 +51,6 @@ export const ui: UiCopy = {
   collapse: "Tanca",
   seeking: "Frontend · React · Barcelona o remot UE · obert des de des 2025",
   proofMetric: "Vaig pujar la cobertura de tests automàtics ~20% en dues setmanes en un projecte crític de Dynatrace.",
-  keyboardHint: "j / k canvia de secció",
   printCta: "Imprimeix el CV",
   printTitle: "Currículum",
   printHint: "Fes servir el diàleg d'impressió per desar un PDF.",

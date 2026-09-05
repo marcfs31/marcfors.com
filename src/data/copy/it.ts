@@ -51,7 +51,6 @@ export const ui: UiCopy = {
   collapse: "Chiudi",
   seeking: "Frontend · React · Barcellona o remoto UE · aperto da dic 2025",
   proofMetric: "Ho alzato la coverage dei test automatici ~20% in due settimane su un progetto critico Dynatrace.",
-  keyboardHint: "j / k sposta le sezioni",
   printCta: "Stampa CV",
   printTitle: "Curriculum",
   printHint: "Usa la finestra di stampa per salvare un PDF.",

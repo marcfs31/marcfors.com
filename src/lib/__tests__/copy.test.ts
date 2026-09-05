@@ -47,7 +47,6 @@ describe("locale copy", () => {
     expect(copy.en.seeking).toMatch(/Dec 2025/);
     expect(copy.en.seeking).not.toMatch(/\bnow\b/i);
     expect(copy.en.proofMetric).toMatch(/~20%/);
-    expect(copy.en.keyboardHint).toMatch(/j \/ k/);
     expect(copy.en.hireCta).toMatch(/hire/i);
     expect(copy.en.buildCta).toMatch(/commission/i);
     expect(copy.en.contactLede).toMatch(/recruiter/i);

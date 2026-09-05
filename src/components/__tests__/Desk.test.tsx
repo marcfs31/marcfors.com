@@ -35,31 +35,32 @@ describe("Desk", () => {
     expect(screen.getByText(copy.en.headline)).toBeInTheDocument();
   });
 
-  const foldHead = (container: HTMLElement, id: string) =>
-    container.querySelector(`[data-fold="${id}"] .fold-head`) as HTMLButtonElement;
-
-  it("renders every fold, with only the intro open", () => {
+  it("renders every section, all visible on load — no accordion", () => {
     const { container } = renderDesk();
-    const ids = ["intro", "work", "projects", "contact", "skills", "signal", "edu", "more"];
-    for (const id of ids) {
-      expect(foldHead(container, id), id).toBeTruthy();
+    for (const id of ["intro", "projects", "work", "skills", "contact", "signal", "edu"]) {
+      const section = container.querySelector(`#${id}`);
+      expect(section, id).toBeTruthy();
+      expect(section, id).toBeVisible();
     }
-    expect(foldHead(container, "intro")).toHaveAttribute("aria-expanded", "true");
-    expect(foldHead(container, "work")).toHaveAttribute("aria-expanded", "false");
-    expect(foldHead(container, "projects")).toHaveAttribute("aria-expanded", "false");
+    // The section headings are plain h2s, not expand/collapse buttons.
+    expect(container.querySelector(".fold-head")).toBeNull();
+    expect(container.querySelector("[aria-expanded]")).toBeNull();
+    for (const label of [copy.en.projectsTitle, copy.en.workTitle, copy.en.contactTitle]) {
+      expect(screen.getByRole("heading", { level: 2, name: label })).toBeInTheDocument();
+    }
   });
 
-  it("opens a fold when its header is clicked, closing the previous one", async () => {
+  it("keeps only the archive collapsed, and it opens on click", async () => {
     const { container } = renderDesk();
-    await userEvent.click(foldHead(container, "projects"));
-    expect(foldHead(container, "projects")).toHaveAttribute("aria-expanded", "true");
-    expect(foldHead(container, "intro")).toHaveAttribute("aria-expanded", "false");
+    const archive = container.querySelector("details#more") as HTMLDetailsElement;
+    expect(archive).toBeTruthy();
+    expect(archive.open).toBe(false);
+    await userEvent.click(within(archive).getByText(copy.en.atticTitle));
+    expect(archive.open).toBe(true);
   });
 
-  it("never shows a source link for a private project", async () => {
-    const { container } = renderDesk();
-    await userEvent.click(foldHead(container, "projects"));
-
+  it("never shows a source link for a private project", () => {
+    renderDesk();
     const privateProject = featured.find((p) => p.private && !p.repo);
     expect(privateProject).toBeTruthy();
     const heading = screen.getByRole("heading", { name: privateProject!.name });

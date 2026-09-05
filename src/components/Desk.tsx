@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { Emphasize } from "@/components/Emphasize";
-import { Fold } from "@/components/Fold";
 import { careerBreak, contact, copy, education, experience, languages, skills } from "@/data/copy";
 import type { Locale } from "@/lib/locale";
 import { withLocale } from "@/lib/locale";
@@ -17,7 +16,6 @@ import { mailTo } from "@/lib/mail";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SITE_NAME, SITE_REPO } from "@/lib/site";
-import { useFoldScroll } from "@/lib/useFoldScroll";
 import { createSpotlightMove } from "@/lib/spotlight";
 import { SignalBoard } from "@/components/SignalBoard";
 
@@ -89,12 +87,6 @@ export function Desk({
     });
   }, [repos]);
 
-  const foldIds = useMemo(
-    () => ["intro", "work", "projects", "contact", "skills", "signal", "edu", "more"],
-    [],
-  );
-
-  const { openId, open } = useFoldScroll(foldIds);
   const spotlightMove = useMemo(() => createSpotlightMove(), []);
 
   return (
@@ -111,15 +103,9 @@ export function Desk({
             {SITE_NAME}
           </Link>
           <nav className="nav" aria-label={t.navLabel}>
-            <a href="#work" onClick={() => open("work")}>
-              {t.workTitle}
-            </a>
-            <a href="#projects" onClick={() => open("projects")}>
-              {t.projectsTitle}
-            </a>
-            <a href="#contact" onClick={() => open("contact")}>
-              {t.contactTitle}
-            </a>
+            <a href="#projects">{t.projectsTitle}</a>
+            <a href="#work">{t.workTitle}</a>
+            <a href="#contact">{t.contactTitle}</a>
             <a href={SITE_REPO} target="_blank" rel="noopener noreferrer">
               {t.source}
             </a>
@@ -131,97 +117,40 @@ export function Desk({
           </nav>
         </header>
 
-        <main id="main" className="folds">
-          <Fold
-            id="intro"
-            title={t.kicker}
-            open={openId === "intro"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            accent
-            onOpen={open}
-          >
-            <div className="hero">
-              <h1>{SITE_NAME}</h1>
-              <p className="role">{t.headline}</p>
-              <p className="seeking">{t.seeking}</p>
-              <p className="tagline">{t.tagline}</p>
-              <div className="meta-row">
-                <span className="hit">{t.place}</span>
-                <span className="hit">{t.now}</span>
-              </div>
-              <p className="lede">
-                <Emphasize text={t.lede} phrases={hits} />
-              </p>
-              <p className="proof-metric">{t.proofMetric}</p>
-              <ProofLine text={t.proofLine} />
-              <div className="cta-row">
-                <a className="cta" href={mailTo(t.hireSubject)}>
-                  {t.hireCta}
-                </a>
-                <a className="cta ghost" href={mailTo(t.buildSubject)}>
-                  {t.buildCta}
-                </a>
-                <Link className="cta ghost" href={withLocale(locale, "/print")}>
-                  {t.printCta}
-                </Link>
-              </div>
-              <a className="hero-email" href={`mailto:${contact.email}`}>
-                {contact.email}
+        <main id="main" className="sheet">
+          <section id="intro" className="hero">
+            <p className="kicker">{t.kicker}</p>
+            <h1>{SITE_NAME}</h1>
+            <p className="role">{t.headline}</p>
+            <p className="seeking">{t.seeking}</p>
+            <p className="tagline">{t.tagline}</p>
+            <div className="meta-row">
+              <span className="hit">{t.place}</span>
+              <span className="hit">{t.now}</span>
+            </div>
+            <p className="lede">
+              <Emphasize text={t.lede} phrases={hits} />
+            </p>
+            <p className="proof-metric">{t.proofMetric}</p>
+            <ProofLine text={t.proofLine} />
+            <div className="cta-row">
+              <a className="cta" href={mailTo(t.hireSubject)}>
+                {t.hireCta}
               </a>
+              <a className="cta ghost" href={mailTo(t.buildSubject)}>
+                {t.buildCta}
+              </a>
+              <Link className="cta ghost" href={withLocale(locale, "/print")}>
+                {t.printCta}
+              </Link>
             </div>
-          </Fold>
+            <a className="hero-email" href={`mailto:${contact.email}`}>
+              {contact.email}
+            </a>
+          </section>
 
-          <Fold
-            id="work"
-            title={t.workTitle}
-            open={openId === "work"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
-            <div className="trace">
-              <article className="job job-now">
-                <div>
-                  <div className="org">{t.breakTitle}</div>
-                  <div className="when">{careerBreak[locale].when}</div>
-                </div>
-                <p>
-                  <Emphasize text={careerBreak[locale].body} phrases={tokens} />
-                </p>
-              </article>
-              {experience[locale].map((job) => (
-                <article className="job" key={job.org + job.when}>
-                  <div>
-                    <div className="org">{job.org}</div>
-                    <div className="title">{job.title}</div>
-                    <div className="when">{job.when}</div>
-                  </div>
-                  <div>
-                    <p>
-                      <Emphasize text={job.body} phrases={tokens} />
-                    </p>
-                    <ul className="job-points">
-                      {job.points.map((point) => (
-                        <li key={point}>
-                          <Emphasize text={point} phrases={tokens} />
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </Fold>
-
-          <Fold
-            id="projects"
-            title={t.projectsTitle}
-            open={openId === "projects"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
+          <section id="projects" className="section">
+            <h2>{t.projectsTitle}</h2>
             <div className="grid-cards">
               {spotlight.map((project) => (
                 <article className="card" key={project.name}>
@@ -254,16 +183,64 @@ export function Desk({
                 ))}
               </div>
             ) : null}
-          </Fold>
+          </section>
 
-          <Fold
-            id="contact"
-            title={t.contactTitle}
-            open={openId === "contact"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
+          <section id="work" className="section">
+            <h2>{t.workTitle}</h2>
+            <div className="trace">
+              <article className="job job-now">
+                <div>
+                  <div className="org">{t.breakTitle}</div>
+                  <div className="when">{careerBreak[locale].when}</div>
+                </div>
+                <p>
+                  <Emphasize text={careerBreak[locale].body} phrases={tokens} />
+                </p>
+              </article>
+              {experience[locale].map((job) => (
+                <article className="job" key={job.org + job.when}>
+                  <div>
+                    <div className="org">{job.org}</div>
+                    <div className="title">{job.title}</div>
+                    <div className="when">{job.when}</div>
+                  </div>
+                  <div>
+                    <p>
+                      <Emphasize text={job.body} phrases={tokens} />
+                    </p>
+                    <ul className="job-points">
+                      {job.points.map((point) => (
+                        <li key={point}>
+                          <Emphasize text={point} phrases={tokens} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section id="skills" className="section">
+            <h2>{t.skillsTitle}</h2>
+            <div className="skill-groups">
+              {(Object.keys(skills) as Array<keyof typeof skills>).map((group) => (
+                <div key={group}>
+                  <div className="skill-label">{t.skillGroups[group]}</div>
+                  <div className="chips">
+                    {skills[group].map((item) => (
+                      <span className={RECRUITER_SKILLS.has(item) ? "chip hit" : "chip"} key={item}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section id="contact" className="section">
+            <h2>{t.contactTitle}</h2>
             <p className="lede">
               <Emphasize text={t.contactLede} phrases={hits} />
             </p>
@@ -301,51 +278,15 @@ export function Desk({
                 </a>
               </div>
             </div>
-          </Fold>
+          </section>
 
-          <Fold
-            id="skills"
-            title={t.skillsTitle}
-            open={openId === "skills"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
-            <div className="skill-groups">
-              {(Object.keys(skills) as Array<keyof typeof skills>).map((group) => (
-                <div key={group}>
-                  <div className="skill-label">{t.skillGroups[group]}</div>
-                  <div className="chips">
-                    {skills[group].map((item) => (
-                      <span className={RECRUITER_SKILLS.has(item) ? "chip hit" : "chip"} key={item}>
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Fold>
-
-          <Fold
-            id="signal"
-            title={t.signalTitle}
-            open={openId === "signal"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
+          <section id="signal" className="section">
+            <h2>{t.signalTitle}</h2>
             <SignalBoard audit={audit} locale={locale} showHeading={false} />
-          </Fold>
+          </section>
 
-          <Fold
-            id="edu"
-            title={t.eduTitle}
-            open={openId === "edu"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
+          <section id="edu" className="section">
+            <h2>{t.eduTitle}</h2>
             {education[locale].map((item) => (
               <p className="edu-line" key={item}>
                 {item}
@@ -353,53 +294,49 @@ export function Desk({
             ))}
             <h3 className="subhead">{t.langsTitle}</h3>
             <p>{languages[locale]}</p>
-          </Fold>
+          </section>
 
-          <Fold
-            id="more"
-            title={t.atticTitle}
-            open={openId === "more"}
-            expandLabel={t.expand}
-            collapseLabel={t.collapse}
-            onOpen={open}
-          >
-            <h3 className="subhead">{t.labTitle}</h3>
-            <p className="lede">{t.labLede}</p>
-            <ul className="lab-list">
-              {lab.map((idea) => (
-                <li key={idea.name}>
-                  {idea.href ? (
-                    <Link href={withLocale(locale, idea.href)}>{idea.name}</Link>
-                  ) : (
-                    <strong>{idea.name}</strong>
-                  )}
-                  <span className="muted"> — {idea.blurb[locale]}</span>
-                </li>
-              ))}
-            </ul>
-            {extraRepos.length > 0 ? (
-              <>
-                <h3 className="subhead">{t.moreTitle}</h3>
-                {extraRepos.slice(0, 8).map((repo) => (
-                  <div className="repo-row" key={repo.html_url}>
-                    <div>
-                      <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
-                        {repo.name}
-                      </a>
-                      <div className="muted">{repo.description ?? repo.language}</div>
-                    </div>
-                    <span className="muted">{repo.language}</span>
-                  </div>
+          <details id="more" className="archive">
+            <summary>
+              <span className="fold-title">{t.atticTitle}</span>
+            </summary>
+            <div className="archive-body">
+              <h3 className="subhead">{t.labTitle}</h3>
+              <p className="lede">{t.labLede}</p>
+              <ul className="lab-list">
+                {lab.map((idea) => (
+                  <li key={idea.name}>
+                    {idea.href ? (
+                      <Link href={withLocale(locale, idea.href)}>{idea.name}</Link>
+                    ) : (
+                      <strong>{idea.name}</strong>
+                    )}
+                    <span className="muted"> — {idea.blurb[locale]}</span>
+                  </li>
                 ))}
-              </>
-            ) : null}
-          </Fold>
+              </ul>
+              {extraRepos.length > 0 ? (
+                <>
+                  <h3 className="subhead">{t.moreTitle}</h3>
+                  {extraRepos.slice(0, 8).map((repo) => (
+                    <div className="repo-row" key={repo.html_url}>
+                      <div>
+                        <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
+                          {repo.name}
+                        </a>
+                        <div className="muted">{repo.description ?? repo.language}</div>
+                      </div>
+                      <span className="muted">{repo.language}</span>
+                    </div>
+                  ))}
+                </>
+              ) : null}
+            </div>
+          </details>
         </main>
 
         <footer>
           <span>{t.footer}</span>
-          {" · "}
-          <span>{t.keyboardHint}</span>
           {" · "}
           <Link href={withLocale(locale, "/print")}>{t.printCta}</Link>
           {" · "}
