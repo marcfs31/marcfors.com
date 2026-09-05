@@ -145,15 +145,60 @@
 .langs {
   display: flex;
   flex-wrap: nowrap;
-  gap: 2px;
-  margin-left: 4px;
-  padding-left: 12px;
+  gap: var(--s-1);
+  margin-left: var(--s-2);
+  padding-left: var(--s-3);
   border-left: 1px solid var(--line);
 }
-.langs button {
-  min-width: 36px;
-  min-height: 44px;
-  padding: 0 4px;
+/* Each locale is a small flag chip. The code rides on a dark plate over the
+   flag so it stays legible on any flag in any theme. */
+.langs a {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 22px;
+  border-radius: var(--r-xs);
+  overflow: hidden;
+  isolation: isolate;
+  filter: saturate(0.9);
+  transition: filter 0.15s ease;
+}
+.langs .flag {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.langs a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 10, 14, 0.12);
+}
+.langs .lang-code {
+  position: relative;
+  z-index: 1;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(8, 10, 14, 0.62);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.langs a:hover,
+.langs a:focus-visible {
+  filter: saturate(1.15);
+}
+.langs a[aria-current="page"] {
+  outline: 1px solid var(--brass);
+  outline-offset: -1px;
+  filter: saturate(1.15);
+}
+.langs a[aria-current="page"] .lang-code {
+  background: var(--brass);
+  color: var(--brass-ink);
 }
 .lang-select-wrap {
   display: none;
