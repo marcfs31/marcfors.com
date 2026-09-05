@@ -48,7 +48,6 @@ export type UiCopy = {
   collapse: string;
   seeking: string;
   proofMetric: string;
-  keyboardHint: string;
   printCta: string;
   printTitle: string;
   printHint: string;

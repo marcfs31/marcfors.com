@@ -297,104 +297,66 @@
   color: var(--brass);
 }
 
-.folds {
-  display: grid;
-  gap: 10px;
-}
-
-/* Each section is a soft rounded panel. Collapsed, it's just its heading bar;
-   open, the panel border and tint appear around the content. */
-.fold {
-  --fold-pad: clamp(16px, 3vw, 24px);
-  margin: 0;
-  border: 1px solid transparent;
-  border-radius: var(--r-lg);
-  padding: 0 var(--fold-pad);
-}
-
-.fold.open {
-  border-color: var(--line);
-  background: var(--panel);
-  padding-bottom: 8px;
-}
-
-.fold-heading {
-  position: sticky;
-  top: 8px;
-  z-index: 6;
-  margin: 0 calc(-1 * var(--fold-pad));
-  padding: 0 var(--fold-pad);
-  background: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-}
-
-/* Open: the heading is flush with the panel's rounded top, not a floating chip. */
-.fold.open .fold-heading {
-  border-color: transparent;
-  border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0;
-}
-
-.fold-head {
-  width: 100%;
+/* The desk is one scannable column: every section is open and stacked, split
+   by a hairline, with room to breathe. Only the archive still folds. */
+.sheet {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  min-height: 56px;
-  padding: 10px 0;
-  background: transparent;
-  border: 0;
-  color: var(--paper-dim);
-  font: inherit;
-  cursor: pointer;
-  text-align: left;
+  flex-direction: column;
+}
+.sheet > section {
+  margin: 0;
 }
 
-.fold-title {
+.section {
+  scroll-margin-top: var(--s-10);
+  padding: var(--s-12) 0;
+  border-top: 1px solid var(--line);
+}
+
+.archive {
+  scroll-margin-top: var(--s-10);
+  padding: var(--s-6) 0 var(--s-12);
+  border-top: 1px solid var(--line);
+}
+.archive > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 44px;
+  list-style: none;
+  cursor: pointer;
+  color: var(--paper-dim);
+}
+.archive > summary::-webkit-details-marker {
+  display: none;
+}
+.archive > summary::before {
+  content: "+";
+  width: 1ch;
+  font-size: var(--t-lg);
+  color: var(--muted);
+}
+.archive[open] > summary::before {
+  content: "\2013";
+}
+.archive > summary:hover {
+  color: var(--paper);
+}
+.archive .fold-title {
   font-family: var(--serif);
   font-weight: 500;
-  font-size: 18px;
+  font-size: var(--t-lg);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-
-.fold-state {
-  flex: 0 0 auto;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.fold.open .fold-head {
-  color: var(--brass);
-}
-
-.fold-head.accent .fold-title {
-  color: var(--signal);
-}
-
-.fold.open .fold-head.accent {
-  color: var(--signal);
-}
-
-.fold:not(.open) .fold-panel {
-  display: none;
-}
-
-.fold.open .fold-panel {
-  display: block;
-}
-
-.fold-panel-inner {
-  padding-bottom: 40px;
+.archive-body {
+  padding-top: var(--s-5);
 }
 
 .hero {
   display: grid;
   gap: 18px;
-  margin: 8px 0 12px;
+  padding-bottom: var(--s-10);
   contain: layout;
 }
 

@@ -2,6 +2,25 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.9.0 — 2026-09-06
+
+### Scannable desk
+
+- The home page is no longer an accordion. Every section — selected work,
+  experience, stack, contact, signal, education — renders open and stacked, so a
+  visitor scanning for twenty seconds sees the whole thing on one scroll instead
+  of a column of collapsed headers. Sections are split by a hairline with real
+  breathing room (`.sheet` / `.section`, on the new spacing scale).
+- Selected work now leads, before the CV history.
+- The one thing that still folds is **More** (lab ideas + extra repos) — a native
+  `<details>`, collapsed by default, genuinely optional depth.
+- Removed the fold machinery: `useFoldScroll` / `foldScroll` (a scroll listener +
+  rAF + keyboard + a pin-quiet window that existed only to drive the accordion),
+  the `Fold` component, and the `j` / `k` section-jump plus its footer hint copy.
+  Nav links are plain in-page anchors with `scroll-margin-top`. ~14 tests for the
+  deleted code went with it; new tests assert every section is present and only
+  the archive collapses (`Desk.test.tsx`, `smoke.spec.ts`, `mobile.spec.ts`).
+
 ## 0.8.0 — 2026-09-06
 
 ### Design tokens

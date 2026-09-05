@@ -30,10 +30,11 @@ describe("displayed signals keep a stable layout", () => {
     expect(css).toContain("white-space: nowrap");
   });
 
-  it("collapses closed folds with display:none, not zero height", () => {
-    expect(css).toContain(".fold:not(.open) .fold-panel");
-    expect(css).toContain("display: none");
-    expect(css).toContain("position: sticky");
+  it("stacks the desk as one scannable column with the archive the only fold", () => {
+    expect(css).toMatch(/\.sheet \{[\s\S]*flex-direction: column/);
+    expect(css).toMatch(/\.section \{[\s\S]*border-top: 1px solid var\(--line\)/);
+    // The native <details> archive carries its own collapse; nothing else hides.
+    expect(css).toContain(".archive[open] > summary");
   });
 
   it("keeps every displayed vital's good ceiling at the Core Web Vitals bar", () => {

@@ -16,12 +16,16 @@ test("compact header: the language select switches locale", async ({ page }) => 
   expect(await page.locator("html").getAttribute("lang")).toBe("de");
 });
 
-test("folds are reachable by tapping their headers on a phone", async ({ page }) => {
+test("all sections are on the page on a phone, archive still folds", async ({ page }) => {
   await page.goto("/");
-  const projects = page.locator('[data-fold="projects"] .fold-head');
-  await projects.click();
-  await expect(projects).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator('[data-fold="intro"] .fold-head')).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator("#projects")).toBeVisible();
+  await expect(page.locator("#work")).toBeVisible();
+  await expect(page.locator("#contact")).toBeVisible();
+
+  const archive = page.locator("details#more");
+  await expect(archive).not.toHaveAttribute("open", /.*/);
+  await archive.locator("summary").click();
+  await expect(archive).toHaveAttribute("open", /.*/);
 });
 
 test("Wordkeep atlas responds to a real touch tap, not just a mouse hover", async ({ page }) => {
