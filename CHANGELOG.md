@@ -2,6 +2,31 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.11.0 — 2026-09-06
+
+### Atlas simulation extraction
+
+- The Wordkeep Atlas's force layout moves out of `WordAtlas.tsx` into a pure
+  `src/lib/atlasSim.ts`: `seedRing` (deterministic ring seed), `buildAdjacency`,
+  `stepForces` (one physics tick, mutates in place), `settle` (run to a fixed
+  tick count, used for the reduced-motion path), and `nodeAt` (pixel hit-test).
+  No DOM, no canvas — unit-tested directly under the node project.
+  `WordAtlas.tsx` keeps only canvas sizing, theme re-read, drawing, and pointer
+  wiring, now calling into the extracted functions.
+- While writing the extraction tests: the simulation's velocities don't
+  actually settle — motion stays high and can grow for thousands of ticks
+  (confirmed identical in the original code, so this predates the extraction,
+  not a regression from it). Positions stay bounded regardless, because the
+  per-tick clamp is unconditional, so the visible layout doesn't run away —
+  but `loop()`'s `moved <= 0.002` rest check most likely never fires, so the
+  animation frame loop runs for as long as the atlas is on screen rather than
+  settling and going idle. Filed as a follow-up, not fixed here.
+- Coverage: `atlasSim.ts` is 100% covered; global `functions` coverage rose
+  71→73%, so `vitest.config.ts`'s `functions` threshold moves 70→73 (still
+  short of the other three thresholds — the remaining gap is `WordAtlas.tsx`'s
+  canvas/pointer closures, which need a real 2D context and are covered by the
+  Playwright e2e suite instead).
+
 ## 0.10.0 — 2026-09-06
 
 ### Server / client boundary

@@ -18,14 +18,15 @@ export default defineConfig({
         "src/app/**/twitter-image.tsx",
         "src/app/icon.svg",
       ],
-      // functions sits a little below the others: WordAtlas's pointer/drag
-      // handlers only do something meaningful against real layout geometry and
-      // a real 2D canvas context, neither of which jsdom provides — they're
-      // exercised by the Playwright e2e suite (e2e/smoke.spec.ts,
-      // e2e/mobile.spec.ts) instead of here.
+      // functions still sits a little below the others: what's left of
+      // WordAtlas.tsx after the sim was lifted into src/lib/atlasSim.ts (pure,
+      // 100%-covered) is canvas draw + pointer/drag wiring that only does
+      // anything against real layout geometry and a real 2D context — jsdom has
+      // neither, so those closures are exercised by the Playwright e2e suite
+      // (e2e/smoke.spec.ts, e2e/mobile.spec.ts) instead of here.
       thresholds: {
         lines: 75,
-        functions: 70,
+        functions: 73,
         branches: 80,
         statements: 75,
       },
