@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { copy } from "@/data/copy";
 import { reportClientError } from "@/lib/errors";
-import { DEFAULT_LOCALE, isLocale } from "@/lib/locale";
 import { SITE_NAME } from "@/lib/site";
 
+// English-only, like `app/global-error.tsx` and `app/not-found.tsx`: an error
+// boundary sits in the tree for every route, so importing the six-locale `copy`
+// map here would ship all of it to every page. The three strings below are the
+// English values of `errorTitle` / `errorBody` / `retryCta`.
 export default function ErrorView({
   error,
   reset,
@@ -13,10 +15,6 @@ export default function ErrorView({
   error?: Error & { digest?: string };
   reset: () => void;
 }) {
-  const stored = typeof document !== "undefined" ? document.documentElement.lang : DEFAULT_LOCALE;
-  const locale = isLocale(stored) ? stored : DEFAULT_LOCALE;
-  const t = copy[locale];
-
   useEffect(() => {
     reportClientError(error, "client-boundary");
   }, [error]);
@@ -24,10 +22,12 @@ export default function ErrorView({
   return (
     <div className="wrap">
       <p className="kicker">{SITE_NAME}</p>
-      <h1>{t.errorTitle}</h1>
-      <p className="lede">{t.errorBody}</p>
+      <h1>The line dropped</h1>
+      <p className="lede">
+        Something failed while this desk was drawing itself. Retry, or write to me if it stays down.
+      </p>
       <button type="button" className="cta" onClick={reset}>
-        {t.retryCta}
+        Retry
       </button>
     </div>
   );

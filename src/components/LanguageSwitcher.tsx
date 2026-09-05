@@ -1,21 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Flag } from "@/components/Flag";
-import { copy } from "@/data/copy";
 import type { Locale } from "@/lib/locale";
 import { isLocale, LOCALE_CODES, LOCALE_LABELS, LOCALES, stripLocale, withLocale } from "@/lib/locale";
 import { writeLocale } from "@/lib/prefs";
 
-export function LanguageSwitcher({ locale, pathname }: { locale: Locale; pathname: string }) {
+export function LanguageSwitcher({ locale, langLabel }: { locale: Locale; langLabel: string }) {
   const router = useRouter();
-  const t = copy[locale];
-  const rest = stripLocale(pathname);
+  const pathname = usePathname();
+  const rest = stripLocale(pathname ?? "/");
 
   return (
     <>
-      <div className="langs" role="group" aria-label={t.lang}>
+      <div className="langs" role="group" aria-label={langLabel}>
         {LOCALES.map((code) => (
           <Link
             key={code}
@@ -32,10 +31,10 @@ export function LanguageSwitcher({ locale, pathname }: { locale: Locale; pathnam
         ))}
       </div>
       <label className="lang-select-wrap">
-        <span className="vh">{t.lang}</span>
+        <span className="vh">{langLabel}</span>
         <select
           className="lang-select"
-          aria-label={t.lang}
+          aria-label={langLabel}
           value={locale}
           onChange={(event) => {
             const next = event.target.value;

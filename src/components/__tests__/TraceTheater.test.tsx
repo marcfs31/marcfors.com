@@ -1,10 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { TraceTheater } from "@/components/TraceTheater";
+import { TraceTheater, type TraceStrings } from "@/components/TraceTheater";
 import { copy } from "@/data/copy";
 
 const t = copy.en;
+const strings: TraceStrings = {
+  traceTitle: t.traceTitle,
+  traceLede: t.traceLede,
+  tracePaste: t.tracePaste,
+  traceSample: t.traceSample,
+  traceClear: t.traceClear,
+  traceInvalid: t.traceInvalid,
+  traceEmpty: t.traceEmpty,
+  traceSpans: t.traceSpans,
+  traceDuration: t.traceDuration,
+};
 
 async function paste(text: string) {
   const box = screen.getByLabelText(t.tracePaste);
@@ -15,7 +26,7 @@ async function paste(text: string) {
 
 describe("TraceTheater", () => {
   it("loads the sample and renders one row per span with a total", async () => {
-    render(<TraceTheater locale="en" />);
+    render(<TraceTheater strings={strings} />);
     await userEvent.click(screen.getByRole("button", { name: t.traceSample }));
 
     expect(screen.getByText(`${t.traceSpans}: 4`)).toBeInTheDocument();
@@ -25,7 +36,7 @@ describe("TraceTheater", () => {
   });
 
   it("flags invalid JSON and clears back to empty", async () => {
-    render(<TraceTheater locale="en" />);
+    render(<TraceTheater strings={strings} />);
     await paste("not json");
     expect(screen.getByText(t.traceInvalid)).toBeInTheDocument();
 
@@ -34,7 +45,7 @@ describe("TraceTheater", () => {
   });
 
   it("shows the empty-state note for well-formed JSON with no spans", async () => {
-    render(<TraceTheater locale="en" />);
+    render(<TraceTheater strings={strings} />);
     await paste('{"spans": []}');
     expect(screen.getByText(t.traceEmpty)).toBeInTheDocument();
   });

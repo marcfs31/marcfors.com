@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect } from "react";
-import { copy } from "@/data/copy";
-import type { Locale } from "@/lib/locale";
 import { applyTheme, readTheme, useTheme, writeTheme } from "@/lib/prefs";
-import { PALETTE_THEMES, THEME_CHOICES } from "@/lib/theme";
+import { PALETTE_THEMES, THEME_CHOICES, type Theme } from "@/lib/theme";
 
 const CORE = ["system", "light", "dark"] as const;
 
-export function ThemeSwitcher({ locale }: { locale: Locale }) {
+export type ThemeNames = Record<Theme, string>;
+
+export function ThemeSwitcher({ label, names }: { label: string; names: ThemeNames }) {
   const theme = useTheme();
-  const t = copy[locale];
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: light)");
@@ -22,13 +21,13 @@ export function ThemeSwitcher({ locale }: { locale: Locale }) {
   }, []);
 
   return (
-    <div className="themes" role="group" aria-label={t.theme}>
+    <div className="themes" role="group" aria-label={label}>
       {CORE.map((id) => (
         <button
           key={id}
           type="button"
           className={`theme-dot theme-dot-${id}`}
-          aria-label={t.themeNames[id]}
+          aria-label={names[id]}
           aria-pressed={theme === id}
           onClick={() => writeTheme(id)}
         />
@@ -39,7 +38,7 @@ export function ThemeSwitcher({ locale }: { locale: Locale }) {
             key={id}
             type="button"
             className={`theme-dot theme-dot-${id}`}
-            aria-label={t.themeNames[id]}
+            aria-label={names[id]}
             aria-pressed={theme === id}
             onClick={() => writeTheme(id)}
           />

@@ -1,8 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { copy } from "@/data/copy";
-import type { Locale } from "@/lib/locale";
+
+export type TraceStrings = {
+  traceTitle: string;
+  traceLede: string;
+  tracePaste: string;
+  traceSample: string;
+  traceClear: string;
+  traceInvalid: string;
+  traceEmpty: string;
+  traceSpans: string;
+  traceDuration: string;
+};
 
 const SAMPLE = `{
   "spans": [
@@ -36,8 +46,7 @@ function parseSpans(raw: string): Span[] | null {
   }
 }
 
-export function TraceTheater({ locale }: { locale: Locale }) {
-  const t = copy[locale];
+export function TraceTheater({ strings: t }: { strings: TraceStrings }) {
   const [raw, setRaw] = useState("");
   const spans = useMemo(() => (raw.trim() ? parseSpans(raw) : []), [raw]);
   const total = spans?.reduce((sum, row) => sum + row.duration, 0) ?? 0;
