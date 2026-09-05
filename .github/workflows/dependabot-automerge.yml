@@ -1,0 +1,100 @@
+name: Dependabot auto-merge
+
+# When Dependabot opens a PR: read what kind of bump it is, let the normal CI
+# (`ci.yml` — verify + e2e) run against it, and then either merge it or leave it
+# for a human. The rules, in one place:
+#
+#   merge automatically  · any dev-dependency patch or minor
+#                        · any github-actions bump (patch/minor/major)
+#                        · any production-dependency PATCH
+#   leave for review     · any production-dependency minor or major
+#                        · any dev-dependency major
+#
+# Nothing is merged until `ci.yml` is green for the PR head SHA. `npm run ci`
+# inside that workflow already runs `npm audit --audit-level=high`, so a bump
+# that introduces an advisory fails the gate.
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Classify the bump
+        id: gate
+        env:
+          UPDATE_TYPE: ${{ steps.meta.outputs.update-type }}
+          DEP_TYPE: ${{ steps.meta.outputs.dependency-type }}
+          ECOSYSTEM: ${{ steps.meta.outputs.package-ecosystem }}
+        run: |
+          safe=false
+          case "$ECOSYSTEM" in
+            github_actions|github-actions) safe=true ;;
+          esac
+          if [ "$DEP_TYPE" = "direct:development" ] && \
+             { [ "$UPDATE_TYPE" = "version-update:semver-patch" ] || \
+               [ "$UPDATE_TYPE" = "version-update:semver-minor" ]; }; then
+            safe=true
+          fi
+          if [ "$DEP_TYPE" = "direct:production" ] && \
+             [ "$UPDATE_TYPE" = "version-update:semver-patch" ]; then
+            safe=true
+          fi
+          echo "safe=$safe" >> "$GITHUB_OUTPUT"
+          echo "Bump: ecosystem=$ECOSYSTEM dep-type=$DEP_TYPE update-type=$UPDATE_TYPE -> safe=$safe"
+
+      - name: Wait for CI, then merge
+        if: steps.gate.outputs.safe == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh pr review --approve "$PR_URL" || true
+
+          # Prefer native auto-merge (needs "Allow auto-merge" on the repo).
+          if gh pr merge --auto --squash --delete-branch "$PR_URL"; then
+            echo "Queued for auto-merge once required checks pass."
+            exit 0
+          fi
+
+          echo "Auto-merge not available; polling the CI workflow for $HEAD_SHA."
+          for _ in $(seq 1 40); do
+            state=$(gh run list --branch "$HEAD_REF" --workflow CI --limit 5 \
+              --json headSha,status,conclusion \
+              --jq "map(select(.headSha==\"$HEAD_SHA\")) | first | (.status // \"missing\") + \"/\" + (.conclusion // \"\")")
+            echo "CI run: $state"
+            case "$state" in
+              completed/success) gh pr merge --squash --delete-branch "$PR_URL"; exit 0 ;;
+              completed/*)        echo "::error::CI is not green — leaving the PR open."; exit 1 ;;
+            esac
+            sleep 30
+          done
+          echo "::error::Timed out waiting for CI."
+          exit 1
+
+      - name: Flag for manual review
+        if: steps.gate.outputs.safe != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          UPDATE_TYPE: ${{ steps.meta.outputs.update-type }}
+          DEP_TYPE: ${{ steps.meta.outputs.dependency-type }}
+          DEP_NAMES: ${{ steps.meta.outputs.dependency-names }}
+        run: |
+          gh pr edit "$PR_URL" --add-label "needs-manual-review" || true
+          body="**Held for manual review** — \`${DEP_NAMES}\` is a \`${DEP_TYPE}\` / \`${UPDATE_TYPE}\` bump, which the auto-merge workflow does not merge on its own. "
+          body="${body}Before merging: read the release notes between the two versions, check the \`dependabot-triage\` skill for the risk notes on this package, and confirm \`npm run ci\` is green."
+          gh pr comment "$PR_URL" --body "$body" || true
