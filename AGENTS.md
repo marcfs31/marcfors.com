@@ -46,10 +46,13 @@ Public personal portfolio for Marc Fors, hosted at **https://marcfors.com**. Obs
 
 - Dependabot config: `.github/dependabot.yml` (weekly; dev-dep patch/minor and
   actions are grouped into one PR each).
-- `.github/workflows/dependabot-automerge.yml` merges the low-risk bumps once
-  `ci.yml` is green: dev-dependency patch/minor, any github-actions bump, and
-  production-dependency **patch**. It labels everything else
-  `needs-manual-review` and comments.
+- `.github/workflows/dependabot-automerge.yml` waits for the PR's `ci.yml` run
+  to go green, then merges: dev-dependency patch/minor, any github-actions bump,
+  and production-dependency **patch**. Everything else gets `needs-manual-review`
+  + a comment. It polls the CI run rather than using GitHub native auto-merge —
+  `main` has no branch protection, so `--auto` would merge before checks finish.
+- `ci.yml`'s "developer mailbox" author check is skipped for `dependabot[bot]`
+  and on `push` (merge commits), so a bot PR can actually go green.
 - Held bumps (production minor/major, dev-dep major) → follow the
   `dependabot-triage` skill. Prod deps are `next`, `react`, `react-dom`,
   `web-vitals`; keep `@types/node` on the major that matches `engines.node`.
