@@ -26,6 +26,11 @@ jobs:
           node-version: "22"
           cache: npm
       - name: Author uses the developer mailbox
+        # Guards against a personal gmail identity landing in a human commit.
+        # Skipped for Dependabot (its commits are authored by dependabot[bot],
+        # and their contents are still gated by `npm run privacy`) and on push
+        # to main, where HEAD is a merge commit authored by whoever merged.
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
         run: |
           author=$(git log -1 --format='%ae')
           echo "HEAD author: $author"
