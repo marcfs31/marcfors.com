@@ -11,6 +11,10 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 - **Cascade layers.** `globals.css` opens `@layer reset, tokens, base, components;` and wraps its rules accordingly, so a component rule can never lose to a reset selector on specificity and future utilities get a layer that always wins. The `@media print` and `prefers-reduced-motion` blocks are intentionally left unlayered so they still override everything.
 - `package.json` is now `"type": "module"` (all scripts and configs were already ESM or explicitly `.cjs`).
 
+### UI
+
+- The language switcher's desktop row is now flag chips — a small inline-SVG flag per locale with its code on a dark plate over it (legible on any flag in either theme); the active locale gets a brass plate and outline. `en` is the Union Jack, `ca` the Catalan senyera. Spacing opened up from the old 2px. New `src/components/Flag.tsx`; the mobile `<select>` is unchanged.
+
 ## 0.7.0 — 2026-09-04
 
 - **Wordkeep** joins featured work with a `/work/wordkeep` case study. The page embeds **The Atlas** — a frozen snapshot of Wordkeep's semantic graph (56 words, 90 links, four languages), drawn on a canvas with a tiny self-contained force layout, no graph library. Drag a word to move it, tap or click one to read its synonym / antonym / translation / related links in a small inline readout; the legend and colours come from the desk's own tokens. Two links out: the live 3D atlas and the Wordkeep app.
