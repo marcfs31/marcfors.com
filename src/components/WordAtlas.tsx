@@ -7,6 +7,7 @@ import {
   nodeAt,
   seedRing,
   settle,
+  shouldAnimate,
   stepForces,
   type SimPoint,
 } from "@/lib/atlasSim";
@@ -63,6 +64,7 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     let W = 1;
     let H = 1;
     let raf = 0;
+    let frame = 0; // ticks the running loop has done; caps the idle entrance animation (see shouldAnimate)
     let hoverIdx = -1; // desktop mouse preview, cleared on pointerleave
     let pinIdx = -1; // click/tap selection, persists until cleared — this is what "opens" a word
     let dragIdx = -1;
@@ -141,9 +143,10 @@ export function WordAtlas({ locale }: { locale: Locale }) {
     }
 
     function loop() {
-      const moved = stepForces(pts, edges, { dragIdx });
+      frame++;
+      stepForces(pts, edges, { dragIdx });
       draw();
-      if (moved > 0.002) raf = requestAnimationFrame(loop);
+      if (shouldAnimate(frame, dragIdx >= 0)) raf = requestAnimationFrame(loop);
       else raf = 0;
     }
 

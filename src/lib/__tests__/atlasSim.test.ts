@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  IDLE_FRAME_BUDGET,
   buildAdjacency,
   nodeAt,
   seedRing,
   settle,
+  shouldAnimate,
   stepForces,
   type SimPoint,
 } from "@/lib/atlasSim";
@@ -93,6 +95,26 @@ describe("settle", () => {
     settle(viaSettle, WORD_ATLAS.edges, 120);
     for (let i = 0; i < 120; i++) stepForces(viaLoop, WORD_ATLAS.edges);
     expect(viaSettle).toEqual(viaLoop);
+  });
+});
+
+describe("shouldAnimate", () => {
+  it("keeps going while a drag is held, no matter the frame count", () => {
+    expect(shouldAnimate(0, true)).toBe(true);
+    expect(shouldAnimate(IDLE_FRAME_BUDGET, true)).toBe(true);
+    expect(shouldAnimate(IDLE_FRAME_BUDGET * 10, true)).toBe(true);
+  });
+
+  it("stops the idle entrance animation at the frame budget", () => {
+    expect(shouldAnimate(0, false)).toBe(true);
+    expect(shouldAnimate(IDLE_FRAME_BUDGET - 1, false)).toBe(true);
+    expect(shouldAnimate(IDLE_FRAME_BUDGET, false)).toBe(false);
+    expect(shouldAnimate(IDLE_FRAME_BUDGET + 1, false)).toBe(false);
+  });
+
+  it("honours a custom budget", () => {
+    expect(shouldAnimate(5, false, 10)).toBe(true);
+    expect(shouldAnimate(10, false, 10)).toBe(false);
   });
 });
 

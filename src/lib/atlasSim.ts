@@ -107,12 +107,32 @@ export function stepForces(
   return moved;
 }
 
+// This layout never comes to rest — see the module doc comment on
+// `shouldAnimate` — so both the reduced-motion snapshot and the full
+// animation's idle budget stop after the same fixed number of ticks rather
+// than waiting for a "moved" value that won't reliably drop below threshold.
+export const IDLE_FRAME_BUDGET = 260;
+
 /**
- * Run the sim to a near-rest layout in one shot. Used for the reduced-motion
- * path, where the component skips the animation and draws the settled state.
+ * Run the sim to a settled-enough layout in one shot. Used for the
+ * reduced-motion path, where the component skips the animation and draws the
+ * result directly.
  */
-export function settle(pts: SimPoint[], edges: readonly AtlasEdge[], ticks = 260): void {
+export function settle(pts: SimPoint[], edges: readonly AtlasEdge[], ticks = IDLE_FRAME_BUDGET): void {
   for (let i = 0; i < ticks; i++) stepForces(pts, edges);
+}
+
+/**
+ * Whether the animate loop should schedule another frame. The all-pairs
+ * repulsion in `stepForces` doesn't damp out — left running, `moved` keeps
+ * oscillating (and can spike) indefinitely instead of settling near zero, so
+ * an idle loop that waits for rest never stops. A held drag always continues
+ * (the pointer is actively driving a node); otherwise the loop gets the same
+ * `IDLE_FRAME_BUDGET` ticks as the reduced-motion snapshot and then goes
+ * idle, matching what reduced-motion users see as "the" layout.
+ */
+export function shouldAnimate(frame: number, dragging: boolean, budget = IDLE_FRAME_BUDGET): boolean {
+  return dragging || frame < budget;
 }
 
 /**

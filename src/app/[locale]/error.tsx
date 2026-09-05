@@ -6,8 +6,8 @@ import { SITE_NAME } from "@/lib/site";
 
 // English-only, like `app/global-error.tsx` and `app/not-found.tsx`: an error
 // boundary sits in the tree for every route, so importing the six-locale `copy`
-// map here would ship all of it to every page. The three strings below are the
-// English values of `errorTitle` / `errorBody` / `retryCta`.
+// map here would ship all of it to every page. The three strings below are
+// hand-written, not translated — there's no per-locale UiCopy for them.
 export default function ErrorView({
   error,
   reset,

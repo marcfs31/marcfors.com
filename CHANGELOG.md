@@ -2,6 +2,38 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.11.1 — 2026-09-06
+
+### Fixed
+
+- The Wordkeep Atlas's `requestAnimationFrame` loop never stopped: its force
+  sim doesn't settle (see 0.11.0), so the `moved <= 0.002` rest check the loop
+  relied on almost never fired — the animation ran for as long as the case
+  study page stayed open. `atlasSim.ts` gains `shouldAnimate` (+
+  `IDLE_FRAME_BUDGET`, 260 ticks — the same budget `settle()` already uses for
+  reduced motion): the idle entrance animation now stops after that budget
+  regardless of `moved`; holding a drag always keeps it running. Unit-tested.
+- `.github/workflows/production.yml` installed `vercel@41` for the manual
+  production-deploy dispatch — four majors behind. Bumped to `vercel@59`.
+
+### Removed
+
+- Ten `UiCopy` keys nothing rendered: `aboutTitle`, `notFoundTitle`,
+  `notFoundBody`, `errorTitle`, `errorBody`, `retryCta` (dead since v0.10.0
+  made the error/404 boundaries static and English-only) and `role`
+  (byte-identical duplicate of `headline`), `idea`, `expand`, `collapse`
+  (leftovers from the fold accordion removed in v0.9.0). That's ten strings
+  translated into six locales for nothing. New `copyUsage.test.ts` fails the
+  suite if a `UiCopy` key stops being read anywhere in `app`/`components`/`lib`,
+  so this doesn't silently reaccumulate — it's the guard the original Phase 3
+  plan called for and never added.
+
+### Docs
+
+- `README.md`: list all three case studies (was just `iterm-studio`), and an
+  Architecture section covering the server/client split, generated design
+  tokens, and the extracted atlas simulation.
+
 ## 0.11.0 — 2026-09-06
 
 ### Atlas simulation extraction

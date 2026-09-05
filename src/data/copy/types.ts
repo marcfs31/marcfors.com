@@ -1,5 +1,4 @@
 export type UiCopy = {
-  role: string;
   place: string;
   now: string;
   kicker: string;
@@ -7,7 +6,6 @@ export type UiCopy = {
   tagline: string;
   lede: string;
   proofLine: string;
-  aboutTitle: string;
   workTitle: string;
   breakTitle: string;
   projectsTitle: string;
@@ -41,11 +39,8 @@ export type UiCopy = {
   public: string;
   lang: string;
   theme: string;
-  idea: string;
   skipToContent: string;
   navLabel: string;
-  expand: string;
-  collapse: string;
   seeking: string;
   proofMetric: string;
   printCta: string;
@@ -69,12 +64,7 @@ export type UiCopy = {
   skillsTitle: string;
   langsTitle: string;
   footer: string;
-  notFoundTitle: string;
-  notFoundBody: string;
   homeCta: string;
-  errorTitle: string;
-  errorBody: string;
-  retryCta: string;
   traceTitle: string;
   traceLede: string;
   tracePaste: string;
