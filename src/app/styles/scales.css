@@ -2,7 +2,8 @@
    Colour tokens are generated into tokens.css from src/lib/themePalettes.ts. */
 @layer tokens {
   :root {
-    /* Corner radius: small controls → panels → floating bars → pills. */
+    /* Corner radius: tiny badges → small controls → panels → bars → pills. */
+    --r-2xs: 4px;
     --r-xs: 6px;
     --r-sm: 10px;
     --r-md: 14px;

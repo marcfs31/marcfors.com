@@ -13,7 +13,7 @@ const css =
 // corners or one-off pixel values.
 describe("radius scale", () => {
   it("defines the full token scale", () => {
-    for (const token of ["--r-xs", "--r-sm", "--r-md", "--r-lg", "--r-pill"]) {
+    for (const token of ["--r-2xs", "--r-xs", "--r-sm", "--r-md", "--r-lg", "--r-pill"]) {
       expect(css).toMatch(new RegExp(`${token}:\\s*[0-9]`));
     }
   });
