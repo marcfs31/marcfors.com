@@ -42,6 +42,18 @@ Public personal portfolio for Marc Fors, hosted at **https://marcfors.com**. Obs
 - `npm audit` runs at prebuild (snapshot in `src/generated/audit.json`) and in CI at `--audit-level=high`.
 - No Vercel cron jobs. Hobby-plan daily-or-coarser only if that ever changes.
 
+## Dependencies
+
+- Dependabot config: `.github/dependabot.yml` (weekly; dev-dep patch/minor and
+  actions are grouped into one PR each).
+- `.github/workflows/dependabot-automerge.yml` merges the low-risk bumps once
+  `ci.yml` is green: dev-dependency patch/minor, any github-actions bump, and
+  production-dependency **patch**. It labels everything else
+  `needs-manual-review` and comments.
+- Held bumps (production minor/major, dev-dep major) → follow the
+  `dependabot-triage` skill. Prod deps are `next`, `react`, `react-dom`,
+  `web-vitals`; keep `@types/node` on the major that matches `engines.node`.
+
 ## Commands
 
 ```bash
