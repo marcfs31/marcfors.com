@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { CASE_STUDIES } from "@/data/caseStudies";
-import { LOCALES, localeUrl } from "@/lib/locale";
+import { languageAlternates, LOCALES, localeUrl } from "@/lib/locale";
 import { RELEASE_DATE, SITE_URL } from "@/lib/site";
 
 // A fixed release date keeps `lastModified` stable between builds. `new Date()` here
@@ -15,6 +15,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "monthly" as const,
       priority: path === "/" ? 1 : 0.7,
+      // Every localized URL lists the full alternate set (incl. x-default) so
+      // crawlers see the hreflang graph from the sitemap, not just the <head>.
+      alternates: { languages: languageAlternates(path, SITE_URL) },
     })),
   );
 }

@@ -26,7 +26,7 @@ Public personal portfolio for Marc Fors, hosted at **https://marcfors.com**. Obs
 - No Tailwind, no shadcn, no hardcoded `bg-emerald-*`.
 - Locale is in the URL (`/` English, `/es`, `/de`, …) with `hreflang`. Cookie still remembers the last pick.
 - `prefers-reduced-motion` hides the pointer spotlight.
-- Copy lives in `src/data/copy.ts`. Featured work in `src/data/projects.ts`. Domain/email constants in `src/lib/site.ts`.
+- Copy lives in `src/data/copy/<locale>.ts` (one file per locale: `ui`, `experience`, `careerBreak`, `education`, `languages`); `src/data/copy.ts` is the barrel that assembles the `Record<Locale, …>` maps, plus locale-independent `skills` / `contact` in `src/data/copy/shared.ts`. Featured work in `src/data/projects.ts`. Domain/email constants in `src/lib/site.ts`.
 
 ## Versioning & git
 
@@ -61,3 +61,13 @@ hook behaviour lives in `src/**/__tests__/*.test.tsx` / `*.dom.test.ts` (jsdom);
 pure logic stays in `*.test.ts` (node). CI is `.github/workflows/ci.yml` — a
 `verify` job (checks + Lighthouse budgets against a local build) and an `e2e` job
 (Playwright). Lighthouse asserts performance/a11y/SEO scores plus CLS, LCP and TBT.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

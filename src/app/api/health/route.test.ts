@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { GET } from "./route";
-import { SITE_HOST, SITE_VERSION } from "@/lib/site";
+import { RELEASE_DATE, SITE_HOST, SITE_VERSION } from "@/lib/site";
 
 describe("GET /api/health", () => {
   it("reports encryption, audit, and version without leaking a personal mailbox", async () => {
@@ -9,6 +9,7 @@ describe("GET /api/health", () => {
     expect(body.ok).toBe(true);
     expect(body.service).toBe(SITE_HOST);
     expect(body.version).toBe(SITE_VERSION);
+    expect(body.releasedAt).toBe(RELEASE_DATE);
     expect(body.encryption.hsts).toBe(true);
     expect(body.encryption.cookies).toBe("none");
     expect(body.headers).toContain("Content-Security-Policy");

@@ -1,0 +1,32 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+
+const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
+
+// Guards the shared corner-radius scale so surfaces don't drift back to hard 0
+// corners or one-off pixel values.
+describe("radius scale", () => {
+  it("defines the full token scale", () => {
+    for (const token of ["--r-xs", "--r-sm", "--r-md", "--r-lg", "--r-pill"]) {
+      expect(css).toMatch(new RegExp(`${token}:\\s*[0-9]`));
+    }
+  });
+
+  it("routes every rounded surface through a token", () => {
+    // No literal `border-radius: 0` and no stray pixel radii (50% for dots and
+    // tokens are the only allowed forms).
+    const decls = [...css.matchAll(/border-radius:\s*([^;]+);/g)].map((m) => m[1].trim());
+    expect(decls.length).toBeGreaterThan(6);
+    for (const value of decls) {
+      expect(value === "50%" || value.includes("var(--r-"), `border-radius: ${value}`).toBe(true);
+    }
+  });
+
+  it("rounds the language select and the section headers", () => {
+    expect(css).toMatch(/\.lang-select\s*\{[^}]*border-radius:\s*var\(--r-xs\)/);
+    expect(css).toMatch(/\.fold-heading\s*\{[^}]*border-radius:\s*var\(--r-md\)/);
+    expect(css).toMatch(/\.fold\s*\{[^}]*border-radius:\s*var\(--r-lg\)/);
+    expect(css).toMatch(/\.card\s*\{[^}]*border-radius:\s*var\(--r-md\)/);
+  });
+});

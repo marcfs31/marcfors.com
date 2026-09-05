@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { findAtlasNodePoint } from "./atlasHit";
 
 test("home renders the desk in English", async ({ page }) => {
   await page.goto("/");
@@ -34,6 +35,46 @@ test("print route renders the CV", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1, name: "Marc Fors" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Stack" })).toBeVisible();
   await expect(page.getByText(/T-Systems/)).toBeVisible();
+});
+
+test("Wordkeep case study embeds the atlas and links out to the live project", async ({ page }) => {
+  await page.goto("/work/wordkeep");
+  await expect(page.getByRole("heading", { level: 1, name: "Wordkeep" })).toBeVisible();
+  await expect(page.locator(".atlas-canvas")).toBeVisible();
+  await expect(page.getByText("56 words · 90 links · 4 languages")).toBeVisible();
+  const openAtlas = page.getByRole("link", { name: "Open the 3D atlas" });
+  const visit = page.getByRole("link", { name: "Visit Wordkeep" });
+  await expect(openAtlas).toHaveAttribute("href", "https://wordkeep-zeta.vercel.app/graph");
+  await expect(visit).toHaveAttribute("href", "https://wordkeep-zeta.vercel.app");
+});
+
+test("Wordkeep atlas: a click selects a word and shows its links, and the canvas claims touch gestures", async ({
+  page,
+}) => {
+  await page.goto("/work/wordkeep");
+  const canvas = page.locator(".atlas-canvas");
+  await expect(canvas).toBeVisible();
+
+  // The bug this guards against: `touch-action: pan-y` handed a finger-drag to
+  // page scroll before the canvas's own pointer handlers ever saw it, so nodes
+  // could not be dragged (or reliably tapped) on a touchscreen.
+  await expect(canvas).toHaveCSS("touch-action", "none");
+
+  // The case study text pushes the atlas below the fold — `page.mouse.click`
+  // clicks literal viewport pixels, so the canvas has to actually be scrolled
+  // into view first or the coordinates below land past the visible viewport.
+  await canvas.scrollIntoViewIfNeeded();
+  const box = await canvas.boundingBox();
+  if (!box) throw new Error("atlas canvas has no layout box");
+  const hit = await findAtlasNodePoint(page, box);
+  expect(hit, "a fine synthetic sweep should find at least one of the 56 nodes").not.toBeNull();
+
+  // The real assertion: an actual mouse click at that spot selects the word.
+  const readout = page.locator(".atlas-readout");
+  await page.mouse.click(box.x + box.width * hit!.gx, box.y + box.height * hit!.gy);
+  await expect(readout).toHaveClass(/\bon\b/);
+  await expect(readout.locator("strong")).not.toBeEmpty();
+  await expect(readout).toContainText(/synonym|antonym|translation|related/);
 });
 
 test("health endpoint is public JSON", async ({ request }) => {

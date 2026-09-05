@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { parseNpmAudit } from "@/lib/audit";
-import { CONTENT_SECURITY_POLICY, SECURITY_HEADERS } from "@/lib/securityHeaders";
+import {
+  CONTENT_SECURITY_POLICY,
+  CONTENT_SECURITY_POLICY_DEV,
+  SECURITY_HEADERS,
+} from "@/lib/securityHeaders";
 import { SITE_VERSION } from "@/lib/site";
 import { formatGoodCeiling, isVitalPayload, ratingFor } from "@/lib/vitals";
 import packageJson from "../../../package.json";
@@ -23,6 +27,14 @@ describe("security headers", () => {
     expect(CONTENT_SECURITY_POLICY).toContain("script-src 'self' 'unsafe-inline'");
     expect(CONTENT_SECURITY_POLICY).toContain("connect-src 'self'");
     expect(CONTENT_SECURITY_POLICY).not.toMatch(/google-analytics|googletagmanager|facebook/i);
+  });
+
+  it("only loosens script-src with 'unsafe-eval' in the dev-only CSP variant", () => {
+    // The dev variant exists so `next dev`'s eval-based stack reconstruction
+    // doesn't trip the policy; it must never reach a production build.
+    expect(CONTENT_SECURITY_POLICY_DEV).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+    const strippedDev = CONTENT_SECURITY_POLICY_DEV.replace(" 'unsafe-eval'", "");
+    expect(strippedDev).toBe(CONTENT_SECURITY_POLICY);
   });
 });
 

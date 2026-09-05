@@ -18,6 +18,15 @@
   color-scheme: dark;
 }
 
+/* One radius scale for the whole desk: small controls → panels → floating bars. */
+:root {
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+}
+
 [data-theme="light"] {
   --ink: #f4efe4;
   --bg2: #ebe4d4;
@@ -118,6 +127,7 @@ a:hover { text-decoration: underline; }
   top: -48px;
   z-index: 20;
   padding: 8px 12px;
+  border-radius: var(--r-xs);
   background: var(--brass);
   color: var(--brass-ink);
 }
@@ -228,13 +238,16 @@ a:hover { text-decoration: underline; }
   background: var(--panel);
   color: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--r-xs);
   min-height: 44px;
   padding: 0 28px 0 10px;
   font: inherit;
   letter-spacing: inherit;
   text-transform: none;
   cursor: pointer;
+}
+.lang-select:hover {
+  border-color: var(--paper-dim);
 }
 .vh {
   position: absolute;
@@ -313,20 +326,40 @@ a:hover { text-decoration: underline; }
 
 .folds {
   display: grid;
-  gap: 0;
+  gap: 10px;
 }
 
+/* Each section is a soft rounded panel. Collapsed, it's just its heading bar;
+   open, the panel border and tint appear around the content. */
 .fold {
+  --fold-pad: clamp(16px, 3vw, 24px);
   margin: 0;
-  border-bottom: 1px solid var(--line);
+  border: 1px solid transparent;
+  border-radius: var(--r-lg);
+  padding: 0 var(--fold-pad);
+}
+
+.fold.open {
+  border-color: var(--line);
+  background: var(--panel);
+  padding-bottom: 8px;
 }
 
 .fold-heading {
   position: sticky;
-  top: 0;
+  top: 8px;
   z-index: 6;
-  margin: 0;
+  margin: 0 calc(-1 * var(--fold-pad));
+  padding: 0 var(--fold-pad);
   background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+
+/* Open: the heading is flush with the panel's rounded top, not a floating chip. */
+.fold.open .fold-heading {
+  border-color: transparent;
+  border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0;
 }
 
 .fold-head {
@@ -337,7 +370,7 @@ a:hover { text-decoration: underline; }
   gap: 16px;
   min-height: 56px;
   padding: 10px 0;
-  background: var(--ink);
+  background: transparent;
   border: 0;
   color: var(--paper-dim);
   font: inherit;
@@ -490,7 +523,7 @@ h1 {
   justify-content: center;
   min-height: 44px;
   padding: 0 18px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--brass);
   color: var(--brass-ink);
   font-size: 12px;
@@ -523,6 +556,7 @@ h1 {
 }
 .contact-panel {
   border: 1px solid var(--line);
+  border-radius: var(--r-md);
   background: var(--panel);
   padding: 28px 24px;
   display: grid;
@@ -635,7 +669,7 @@ h2 {
 .chip {
   border: 1px solid var(--line);
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -654,6 +688,7 @@ h2 {
 
 .card {
   border: 1px solid var(--line);
+  border-radius: var(--r-md);
   background: var(--panel);
   padding: 20px;
   display: grid;
@@ -741,6 +776,7 @@ h2 {
   width: min(280px, 70vw);
   padding: 12px 14px;
   border: 1px solid var(--line);
+  border-radius: var(--r-sm);
   background: var(--panel);
   color: var(--paper);
   font-size: 13px;
@@ -835,6 +871,7 @@ footer {
   min-height: 180px;
   padding: 14px;
   border: 1px solid var(--line);
+  border-radius: var(--r-sm);
   background: var(--panel);
   color: var(--paper);
   font: inherit;
@@ -874,6 +911,111 @@ footer {
 }
 .case section {
   margin: 28px 0;
+}
+
+/* ---- Wordkeep Atlas embed ---- */
+.atlas-block {
+  margin: 44px 0 8px;
+  max-width: 920px;
+}
+.atlas-block .lede {
+  max-width: 62ch;
+}
+.atlas {
+  margin: 18px 0 0;
+  display: grid;
+  gap: 14px;
+}
+.atlas-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(300px, 52vw, 440px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 90% at 82% 0%, var(--glow), transparent 60%),
+    var(--panel);
+  overflow: hidden;
+}
+.atlas-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Nodes are draggable in any direction, so the canvas must own every touch
+     gesture inside it — `pan-y` would hand a vertical drag to page scroll
+     before a pointer handler ever saw it. */
+  touch-action: none;
+}
+.atlas-readout {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  backdrop-filter: blur(6px);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--paper-dim);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  pointer-events: none;
+}
+.atlas-readout.on {
+  opacity: 1;
+  transform: none;
+}
+.atlas-readout strong {
+  color: var(--paper);
+  font-family: var(--serif);
+  font-weight: 600;
+  margin-right: 2px;
+}
+.atlas-legend {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.atlas-count {
+  color: var(--paper-dim);
+  font-variant-numeric: tabular-nums;
+}
+.atlas-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 16px;
+}
+.atlas-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.atlas-key i {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  border-top: 2px solid var(--muted);
+}
+.atlas-key[data-rel="syn"] i { border-top-color: var(--signal); }
+.atlas-key[data-rel="ant"] i { border-top-style: dashed; border-top-color: var(--danger); }
+.atlas-key[data-rel="tr"] i { border-top-color: var(--brass); }
+.atlas-key[data-rel="rel"] i { border-top-style: dotted; border-top-color: var(--muted); }
+.atlas-lang em {
+  font-style: normal;
+  color: var(--paper-dim);
+  margin-left: 3px;
+}
+.atlas-links {
+  margin-top: 2px;
 }
 .print-cv {
   display: grid;
@@ -920,5 +1062,5 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .spot { display: none; }
   .tip { transform: none; }
-
+  .atlas-readout { transition: none; transform: none; }
 }

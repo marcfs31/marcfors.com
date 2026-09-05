@@ -13,6 +13,36 @@ export type CaseStudy = {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
+    slug: "wordkeep",
+    project: "Wordkeep",
+    stack: ["React", "Vite", "TypeScript"],
+    live: "https://wordkeep-zeta.vercel.app",
+    problem: {
+      en: "A flashcard list tells you which words you saved, not how they relate. You learn 'hot' and 'cold' as two unconnected entries instead of one axis you already half-know in four languages.",
+      es: "Una lista de tarjetas te dice qué palabras guardaste, no cómo se relacionan. Aprendes 'hot' y 'cold' como dos entradas sueltas en vez de un eje que ya intuyes en cuatro idiomas.",
+      ca: "Una llista de targetes et diu quines paraules has desat, no com es relacionen. Aprens 'hot' i 'cold' com dues entrades soltes en lloc d'un eix que ja intueixes en quatre llengües.",
+      it: "Una lista di flashcard ti dice quali parole hai salvato, non come si legano. Impari 'hot' e 'cold' come due voci scollegate invece di un asse che già intuisci in quattro lingue.",
+      pt: "Uma lista de cartões diz-te que palavras guardaste, não como se relacionam. Aprendes 'hot' e 'cold' como duas entradas soltas em vez de um eixo que já intuis em quatro línguas.",
+      de: "Eine Karteikartenliste sagt dir, welche Wörter du gespeichert hast, nicht wie sie zusammenhängen. Du lernst 'hot' und 'cold' als zwei lose Einträge statt als eine Achse, die du in vier Sprachen schon halb kennst.",
+    },
+    approach: {
+      en: "Every saved word carries typed links — synonym, antonym, translation, related. A spaced queue schedules review; a 3D force graph, the Atlas, lays the whole lexicon out so those links become shape. Built with React, Vite and a small serverless API.",
+      es: "Cada palabra guardada lleva enlaces tipados — sinónimo, antónimo, traducción, relacionada. Una cola espaciada programa el repaso; un grafo de fuerzas 3D, el Atlas, despliega todo el léxico para que esos enlaces tomen forma. React, Vite y una pequeña API serverless.",
+      ca: "Cada paraula desada porta enllaços tipats — sinònim, antònim, traducció, relacionada. Una cua espaiada programa el repàs; un graf de forces 3D, l'Atles, desplega tot el lèxic perquè aquests enllaços prenguin forma. React, Vite i una petita API serverless.",
+      it: "Ogni parola salvata porta legami tipizzati — sinonimo, contrario, traduzione, correlata. Una coda spaziata programma il ripasso; un grafo a forze 3D, l'Atlante, dispone l'intero lessico perché quei legami diventino forma. React, Vite e una piccola API serverless.",
+      pt: "Cada palavra guardada leva ligações tipadas — sinónimo, antónimo, tradução, relacionada. Uma fila espaçada agenda a revisão; um grafo de forças 3D, o Atlas, dispõe todo o léxico para que essas ligações ganhem forma. React, Vite e uma pequena API serverless.",
+      de: "Jedes gespeicherte Wort trägt typisierte Kanten — Synonym, Gegenteil, Übersetzung, verwandt. Eine Spaced-Queue plant die Wiederholung; ein 3D-Kräftegraph, der Atlas, legt das ganze Lexikon aus, damit diese Kanten Form bekommen. Gebaut mit React, Vite und einer kleinen Serverless-API.",
+    },
+    result: {
+      en: "A vocabulary you can walk through, not just scroll. The Atlas on this page is a frozen slice of the live graph; the full 3D version is one click away.",
+      es: "Un vocabulario por el que puedes pasear, no solo hacer scroll. El Atlas de esta página es un trozo congelado del grafo en vivo; la versión 3D completa está a un clic.",
+      ca: "Un vocabulari pel qual pots passejar, no només fer scroll. L'Atles d'aquesta pàgina és un tall congelat del graf en viu; la versió 3D completa és a un clic.",
+      it: "Un lessico in cui puoi camminare, non solo scorrere. L'Atlante di questa pagina è una fetta congelata del grafo live; la versione 3D completa è a un clic.",
+      pt: "Um vocabulário pelo qual podes caminhar, não só fazer scroll. O Atlas desta página é uma fatia congelada do grafo ao vivo; a versão 3D completa está a um clique.",
+      de: "Ein Wortschatz, durch den man gehen kann, nicht nur scrollen. Der Atlas auf dieser Seite ist ein eingefrorener Ausschnitt des Live-Graphen; die volle 3D-Version ist einen Klick entfernt.",
+    },
+  },
+  {
     slug: "habit-breaker",
     project: "Habit Breaker",
     stack: ["Next.js 16", "Clerk", "Neon", "Drizzle"],

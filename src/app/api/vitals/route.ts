@@ -1,28 +1,9 @@
+import { clientIp, createRateLimiter } from "@/lib/rateLimit";
 import { isVitalPayload } from "@/lib/vitals";
 
 export const dynamic = "force-dynamic";
 
-const WINDOW_MS = 60_000;
-const MAX_HITS = 40;
-const hits = new Map<string, number[]>();
-
-function limited(ip: string): boolean {
-  const now = Date.now();
-  const rows = (hits.get(ip) ?? []).filter((stamp) => now - stamp < WINDOW_MS);
-  if (rows.length >= MAX_HITS) {
-    hits.set(ip, rows);
-    return true;
-  }
-  rows.push(now);
-  hits.set(ip, rows);
-  return false;
-}
-
-function clientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip") ?? "local";
-}
+const limited = createRateLimiter({ max: 40 });
 
 export async function POST(request: Request) {
   if (limited(clientIp(request))) {

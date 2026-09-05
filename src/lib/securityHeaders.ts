@@ -1,4 +1,4 @@
-export const CONTENT_SECURITY_POLICY = [
+const CSP_DIRECTIVES = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
@@ -10,7 +10,17 @@ export const CONTENT_SECURITY_POLICY = [
   "form-action 'self'",
   "frame-ancestors 'none'",
   "upgrade-insecure-requests",
-].join("; ");
+];
+
+export const CONTENT_SECURITY_POLICY = CSP_DIRECTIVES.join("; ");
+
+// `next dev` only: React 19 / Next 16 in development call eval() for debugging
+// features (reconstructing call stacks across environments). Production builds
+// never do, so the shipped policy above stays strict — this relaxed variant is
+// wired up in next.config.ts solely when NODE_ENV !== "production".
+export const CONTENT_SECURITY_POLICY_DEV = CSP_DIRECTIVES.map((directive) =>
+  directive.startsWith("script-src ") ? `${directive} 'unsafe-eval'` : directive,
+).join("; ");
 
 export const SECURITY_HEADERS: { key: string; value: string }[] = [
   {

@@ -2,6 +2,13 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.7.0 — 2026-09-04
+
+- **Wordkeep** joins featured work with a `/work/wordkeep` case study. The page embeds **The Atlas** — a frozen snapshot of Wordkeep's semantic graph (56 words, 90 links, four languages), drawn on a canvas with a tiny self-contained force layout, no graph library. Drag a word to move it, tap or click one to read its synonym / antonym / translation / related links in a small inline readout; the legend and colours come from the desk's own tokens. Two links out: the live 3D atlas and the Wordkeep app.
+- Fix: the embed shipped hover-only, so it did nothing on a touchscreen — worse, `touch-action: pan-y` handed a finger-drag to page scroll before the canvas's own pointer handlers ever saw it. Click/tap now drives a persistent selection (works identically for mouse and touch) and nodes are properly draggable; `touch-action: none` lets the canvas claim its own gestures.
+- `src/data/wordAtlas.ts` holds the snapshot and its localized micro-copy; `WordAtlas.tsx` is the client component. Unit tests for both, an axe check on the render, and e2e coverage (`e2e/atlasHit.ts`) driving a real mouse click and a real touchscreen tap through the actual selection.
+- Dev-only: `next dev` serves an eval-tolerant CSP (`script-src … 'unsafe-eval'`) so React 19's development-mode stack reconstruction stops tripping the policy and logging a console error. The shipped production CSP is unchanged — still no `unsafe-eval` — and the swap is gated on `NODE_ENV` in `next.config.ts`. `CONTENT_SECURITY_POLICY_DEV` in `src/lib/securityHeaders.ts`, covered in `security.test.ts` / `headers.test.ts`.
+
 ## 0.6.0 — 2026-09-02
 
 ### Rendering
@@ -10,10 +17,22 @@ All notable changes to this project are versioned with [SemVer](https://semver.o
 - Added a `global-error` boundary with its own shell for failures in the root layout itself.
 - Single self-contained 404 surface (`app/not-found.tsx`) with its own shell; it is English-only so it can stay static.
 
+### UI
+
+- One shared corner-radius scale (`--r-xs` … `--r-lg`, plus the pill). The language `<select>`, the section headers, cards, the contact panel, tooltips and the trace textarea were square-cornered (or `border-radius: 0`); they now round consistently. Each fold reads as a soft rounded panel — collapsed, just its heading bar; open, a bordered tinted panel with the header flush to the top.
+
 ### SEO & polish
 
 - `robots.txt` now `Disallow`s `/print` and `/lab` (bare and locale-prefixed), and those routes also send `X-Robots-Tag: noindex, nofollow` — honoured even when the HTML is never parsed.
+- Every sitemap entry carries the full hreflang alternate set (incl. `x-default`), not just the `<head>`.
 - Adaptive `theme-color` / `color-scheme` meta so mobile browser chrome tracks the light/dark palette instead of one hard-coded colour.
+- `/api/health` reports `releasedAt` so the signal board can date the running build.
+
+### Refactor
+
+- `src/data/copy.ts` (1133 lines) split into `src/data/copy/<locale>.ts` — one file per locale — with a thin barrel assembling the maps. Verified byte-identical output. Locale-independent `skills` / `contact` moved to `copy/shared.ts`.
+- The `/api/vitals` and `/api/errors` rate limiters are one shared `src/lib/rateLimit.ts`.
+- Playwright now also runs a `mobile` (Pixel 7) project covering the compact header's language `<select>`.
 
 ### Fixes
 

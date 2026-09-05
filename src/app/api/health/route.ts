@@ -1,6 +1,6 @@
 import { getAuditSnapshot } from "@/lib/audit";
 import { SECURITY_HEADERS } from "@/lib/securityHeaders";
-import { SITE_HOST, SITE_VERSION } from "@/lib/site";
+import { RELEASE_DATE, SITE_HOST, SITE_VERSION } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +11,7 @@ export function GET() {
       ok: true,
       service: SITE_HOST,
       version: SITE_VERSION,
+      releasedAt: RELEASE_DATE,
       commit: process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "local",
       region: process.env.VERCEL_REGION ?? "local",
       encryption: {
