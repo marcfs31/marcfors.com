@@ -1,7 +1,8 @@
 {
   "name": "marcfors.com",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=22"
   },
@@ -9,7 +10,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prebuild": "node scripts/audit-snapshot.mjs",
+    "prebuild": "node scripts/gen-tokens.mjs && node scripts/audit-snapshot.mjs",
+    "gen:tokens": "node scripts/gen-tokens.mjs",
     "lint": "eslint src",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",

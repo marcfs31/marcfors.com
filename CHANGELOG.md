@@ -2,6 +2,15 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
+## 0.8.0 — 2026-09-06
+
+### Design tokens
+
+- **One source of truth for theme colour.** The `:root` / `[data-theme="…"]` custom-property blocks are now generated into `src/app/styles/tokens.css` from `THEME_PALETTES` in `src/lib/themePalettes.ts` (`tokensCssFile()` → `scripts/gen-tokens.mjs`, run at `prebuild` and as `npm run gen:tokens`). `globals.css` no longer declares a theme block, so the palette can't drift between the TS object and the stylesheet. `tokens.test.ts` fails the suite if the committed file is stale; `theme.test.ts` / `contrast.test.ts` now assert against the palette object directly.
+- Hand-written scales gathered in `src/app/styles/scales.css`: the existing radius scale plus new spacing (`--s-1…--s-20`, 4px base), type (`--t-xs…--t-3xl`), line-height and z-index (`--z-skip`, `--z-tip`, `--z-heading`) ladders.
+- **Cascade layers.** `globals.css` opens `@layer reset, tokens, base, components;` and wraps its rules accordingly, so a component rule can never lose to a reset selector on specificity and future utilities get a layer that always wins. The `@media print` and `prefers-reduced-motion` blocks are intentionally left unlayered so they still override everything.
+- `package.json` is now `"type": "module"` (all scripts and configs were already ESM or explicitly `.cjs`).
+
 ## 0.7.0 — 2026-09-04
 
 - **Wordkeep** joins featured work with a `/work/wordkeep` case study. The page embeds **The Atlas** — a frozen snapshot of Wordkeep's semantic graph (56 words, 90 links, four languages), drawn on a canvas with a tiny self-contained force layout, no graph library. Drag a word to move it, tap or click one to read its synonym / antonym / translation / related links in a small inline readout; the legend and colours come from the desk's own tokens. Two links out: the live 3D atlas and the Wordkeep app.
