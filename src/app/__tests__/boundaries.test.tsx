@@ -33,8 +33,7 @@ describe("global-error boundary", () => {
 });
 
 describe("locale error boundary", () => {
-  it("renders localized copy, beacons, and retries", async () => {
-    document.documentElement.lang = "de";
+  it("renders, beacons, and retries", async () => {
     const reset = vi.fn();
     render(<ErrorView error={new Error("x")} reset={reset} />);
 

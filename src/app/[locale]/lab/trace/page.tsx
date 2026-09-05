@@ -24,7 +24,19 @@ export default async function TracePage({ params }: { params: Promise<{ locale: 
         <Link href={withLocale(locale, "/")}>{t.homeCta}</Link>
       </header>
       <main id="main">
-        <TraceTheater locale={locale} />
+        <TraceTheater
+          strings={{
+            traceTitle: t.traceTitle,
+            traceLede: t.traceLede,
+            tracePaste: t.tracePaste,
+            traceSample: t.traceSample,
+            traceClear: t.traceClear,
+            traceInvalid: t.traceInvalid,
+            traceEmpty: t.traceEmpty,
+            traceSpans: t.traceSpans,
+            traceDuration: t.traceDuration,
+          }}
+        />
       </main>
     </div>
   );

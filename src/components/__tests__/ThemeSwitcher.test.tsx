@@ -28,7 +28,7 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("ThemeSwitcher", () => {
   it("offers system, light and dark plus the extra palettes", () => {
-    render(<ThemeSwitcher locale="en" />);
+    render(<ThemeSwitcher label={copy.en.theme} names={copy.en.themeNames} />);
     const names = copy.en.themeNames;
     for (const id of ["system", "light", "dark", "green", "blue", "red"] as const) {
       expect(screen.getByRole("button", { name: names[id] })).toBeInTheDocument();
@@ -36,7 +36,7 @@ describe("ThemeSwitcher", () => {
   });
 
   it("marks the active choice with aria-pressed and persists a pick", async () => {
-    render(<ThemeSwitcher locale="en" />);
+    render(<ThemeSwitcher label={copy.en.theme} names={copy.en.themeNames} />);
     const system = screen.getByRole("button", { name: copy.en.themeNames.system });
     expect(system).toHaveAttribute("aria-pressed", "true");
 

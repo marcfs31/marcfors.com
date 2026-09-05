@@ -2,7 +2,26 @@
 
 All notable changes to this project are versioned with [SemVer](https://semver.org/).
 
-## 0.9.0 — 2026-09-06
+## 0.10.0 — 2026-09-06
+
+### Server / client boundary
+
+- `Desk` is a Server Component again. It was one ~350-line `"use client"` blob
+  that imported the whole six-locale `copy` map, so every visitor downloaded five
+  locales they can't read plus the entire desk render tree. Now the desk renders
+  on the server with only `copy[locale]`, and the interactive bits are small
+  client islands:
+  - `SpotlightLayer` — the `.desk` shell; wires the pointer-spotlight and takes
+    the server-rendered content as `children`.
+  - `LanguageSwitcher` reads `usePathname()` itself and takes `langLabel` as a
+    prop; `ThemeSwitcher` takes `label` + `names`; `SignalBoard` takes a
+    `strings` object; `TraceTheater` takes `strings`. None import `copy`.
+- `app/[locale]/error.tsx` is English-only now, like `global-error.tsx` and
+  `not-found.tsx` — an error boundary sits in every route's tree, so importing
+  `copy` there shipped all of it site-wide.
+- Result: no non-English locale copy in the client bundle on the main routes
+  (checked by `clientBundle.test.ts`, which fails if a `"use client"` file
+  imports the `copy` barrel). Raw client JS on `/` drops ~840 KB → ~645 KB.
 
 ### Scannable desk
 

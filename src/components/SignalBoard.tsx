@@ -12,9 +12,7 @@ import {
   type VitalName,
   type VitalPayload,
 } from "@/lib/vitals";
-import type { Locale } from "@/lib/locale";
 import { SITE_URL } from "@/lib/site";
-import { copy } from "@/data/copy";
 
 type Health = {
   ok: boolean;
@@ -24,16 +22,33 @@ type Health = {
   audit: AuditSnapshot;
 };
 
+/** Just the copy this island renders — passed in from the server so the client
+ *  bundle never pulls the full six-locale `copy` map. */
+export type SignalStrings = {
+  signalTitle: string;
+  signalLede: string;
+  auditTitle: string;
+  auditBody: string;
+  auditClean: string;
+  auditHot: string;
+  obsTitle: string;
+  vitalsTitle: string;
+  vitalGood: string;
+  vitalDefs: Record<VitalName, string>;
+  healthLine: string;
+  healthWaiting: string;
+  controls: Record<(typeof SECURITY_CONTROL_IDS)[number], string>;
+};
+
 export function SignalBoard({
   audit,
-  locale,
+  strings: t,
   showHeading = true,
 }: {
   audit: AuditSnapshot;
-  locale: Locale;
+  strings: SignalStrings;
   showHeading?: boolean;
 }) {
-  const t = copy[locale];
   const [health, setHealth] = useState<Health | null>(null);
   const [vitals, setVitals] = useState<Partial<Record<VitalName, VitalPayload>>>({});
 

@@ -1,8 +1,4 @@
-"use client";
-
-import { useMemo } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { Emphasize } from "@/components/Emphasize";
 import { careerBreak, contact, copy, education, experience, languages, skills } from "@/data/copy";
@@ -16,8 +12,8 @@ import { mailTo } from "@/lib/mail";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SITE_NAME, SITE_REPO } from "@/lib/site";
-import { createSpotlightMove } from "@/lib/spotlight";
-import { SignalBoard } from "@/components/SignalBoard";
+import { SpotlightLayer } from "@/components/SpotlightLayer";
+import { SignalBoard, type SignalStrings } from "@/components/SignalBoard";
 
 function projectLinks(project: Project, locale: Locale) {
   const t = copy[locale];
@@ -69,30 +65,38 @@ export function Desk({
   initialLocale: Locale;
 }) {
   const locale = initialLocale;
-  const pathname = usePathname();
   const t = copy[locale];
   const hits = t.hits;
   const tokens = [...hits, ...RECRUITER_TOKENS];
   const spotlight = featured.filter((item) => item.spotlight);
   const restWork = featured.filter((item) => !item.spotlight);
 
-  const extraRepos = useMemo(() => {
-    const featuredNames = new Set(featured.map((item) => item.name.toLowerCase().replace(/\s+/g, "-")));
-    const featuredUrls = new Set(featured.map((item) => item.repo).filter(Boolean));
-    return repos.filter((repo) => {
-      const slug = repo.name.toLowerCase();
-      if (featuredNames.has(slug)) return false;
-      if (featuredUrls.has(repo.html_url)) return false;
-      return true;
-    });
-  }, [repos]);
+  const featuredNames = new Set(featured.map((item) => item.name.toLowerCase().replace(/\s+/g, "-")));
+  const featuredUrls = new Set(featured.map((item) => item.repo).filter(Boolean));
+  const extraRepos = repos.filter((repo) => {
+    if (featuredNames.has(repo.name.toLowerCase())) return false;
+    if (featuredUrls.has(repo.html_url)) return false;
+    return true;
+  });
 
-  const spotlightMove = useMemo(() => createSpotlightMove(), []);
+  const signalStrings: SignalStrings = {
+    signalTitle: t.signalTitle,
+    signalLede: t.signalLede,
+    auditTitle: t.auditTitle,
+    auditBody: t.auditBody,
+    auditClean: t.auditClean,
+    auditHot: t.auditHot,
+    obsTitle: t.obsTitle,
+    vitalsTitle: t.vitalsTitle,
+    vitalGood: t.vitalGood,
+    vitalDefs: t.vitalDefs,
+    healthLine: t.healthLine,
+    healthWaiting: t.healthWaiting,
+    controls: t.controls,
+  };
 
   return (
-    <div className="desk" onPointerMove={spotlightMove}>
-      <div className="grid" />
-      <div className="spot" />
+    <SpotlightLayer>
       <a className="skip" href="#main">
         {t.skipToContent}
       </a>
@@ -112,8 +116,8 @@ export function Desk({
             <a className="nav-hire" href={mailTo(t.hireSubject)}>
               {t.hireCta}
             </a>
-            <LanguageSwitcher locale={locale} pathname={pathname} />
-            <ThemeSwitcher locale={locale} />
+            <LanguageSwitcher locale={locale} langLabel={t.lang} />
+            <ThemeSwitcher label={t.theme} names={t.themeNames} />
           </nav>
         </header>
 
@@ -282,7 +286,7 @@ export function Desk({
 
           <section id="signal" className="section">
             <h2>{t.signalTitle}</h2>
-            <SignalBoard audit={audit} locale={locale} showHeading={false} />
+            <SignalBoard audit={audit} strings={signalStrings} showHeading={false} />
           </section>
 
           <section id="edu" className="section">
@@ -345,6 +349,6 @@ export function Desk({
           </a>
         </footer>
       </div>
-    </div>
+    </SpotlightLayer>
   );
 }
