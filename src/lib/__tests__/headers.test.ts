@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import nextConfig from "../../../next.config";
+import { CONTENT_SECURITY_POLICY } from "@/lib/securityHeaders";
 
 async function headerRules() {
   const rules = await nextConfig.headers!();
@@ -12,6 +13,17 @@ describe("next.config headers()", () => {
     const all = rules.find((r) => r.source === "/:path*");
     expect(all?.headers.map((h) => h.key)).toContain("Content-Security-Policy");
     expect(all?.headers.map((h) => h.key)).toContain("Strict-Transport-Security");
+  });
+
+  it("serves the eval-tolerant CSP outside production", async () => {
+    // Vitest runs with NODE_ENV=test, i.e. the non-production branch. The strict
+    // production value is asserted separately in security.test.ts.
+    const rules = await headerRules();
+    const csp = rules
+      .find((r) => r.source === "/:path*")
+      ?.headers.find((h) => h.key === "Content-Security-Policy")?.value;
+    expect(csp).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+    expect(CONTENT_SECURITY_POLICY).not.toContain("'unsafe-eval'");
   });
 
   it("adds X-Robots-Tag noindex to /print and /lab, bare and locale-prefixed", async () => {
